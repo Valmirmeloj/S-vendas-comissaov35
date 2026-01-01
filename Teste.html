@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Contas Pro v35 - Gestão Financeira</title>
+    
+    <!-- SDKs FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- FONTES E ICONES -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* ESTILOS ORIGINAIS RESTAURADOS */
+        body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background: #0f172a; color: #f8fafc; transition: all 0.3s; }
+        body.notion-mode { background: #ffffff; color: #37352f; }
+        
+        .app-container { padding: 120px 20px 40px 20px; max-width: 1200px; margin: 0 auto; }
+        
+        /* BARRA SUPERIOR */
+        .top-actions-bar { position: fixed; top: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(139, 92, 246, 0.3); padding: 15px 20px; z-index: 1000; display: flex; justify-content: space-between; align-items: center; }
+        body.notion-mode .top-actions-bar { background: #fff; border-bottom: 1px solid #eee; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+
+        .app-logo { font-size: 20px; font-weight: 900; background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        body.notion-mode .app-logo { -webkit-text-fill-color: #37352f; }
+
+        /* CARDS E STATUS */
+        .glass { background: #1e293b; border-radius: 16px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        body.notion-mode .glass { background: #fff; border: 1px solid #eee; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+
+        .stat-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 12px; padding: 15px; border: 1px solid rgba(139, 92, 246, 0.2); text-align: center; }
+        body.notion-mode .stat-card { background: #f9f9fb; border-color: #eee; }
+
+        /* KANBAN */
+        .kanban-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+        .kanban-column { background: rgba(30, 41, 59, 0.3); border-radius: 16px; padding: 12px; min-height: 300px; }
+        body.notion-mode .kanban-column { background: #f4f5f7; }
+        
+        .kanban-card { background: #1e293b; border-radius: 12px; padding: 15px; margin-bottom: 12px; border-left: 4px solid #3b82f6; transition: 0.2s; }
+        body.notion-mode .kanban-card { background: #fff; border: 1px solid #ddd; border-left: 4px solid #3b82f6; }
+        
+        .btn-primary { background: #3b82f6; color: white; padding: 12px; border-radius: 10px; font-weight: 800; width: 100%; border: none; cursor: pointer; text-transform: uppercase; font-size: 12px; }
+        .input-box { background: rgba(0,0,0,0.2); border: 1px solid #334155; color: white; padding: 10px; border-radius: 8px; width: 100%; margin-bottom: 10px; outline: none; }
+        body.notion-mode .input-box { background: #fff; border-color: #ccc; color: #333; }
+
+        .tab-btn { padding: 10px 15px; font-weight: 700; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; }
+        .tab-btn.active { color: #8b5cf6; border-bottom-color: #8b5cf6; }
+        .hidden { display: none !important; }
+        #loading-screen { position: fixed; inset: 0; background: #0f172a; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body>
+
+    <div id="loading-screen">
+        <div style="width: 40px; height: 40px; border: 4px solid #8b5cf6; border-top-color: transparent; border-radius: 50%;" class="animate-spin"></div>
+        <p style="margin-top: 15px; color: #8b5cf6; font-weight: 900; font-size: 10px;" class="uppercase animate-pulse">Carregando Contas Pro v35...</p>
+    </div>
+
+    <!-- HEADER -->
+    <div class="top-actions-bar">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <button onclick="location.href='index.html'" style="background: none; border: none; color: #64748b;"><i class="fas fa-chevron-left text-xl"></i></button>
+            <div class="app-logo">💰 Contas Pro</div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <button onclick="app.toggleViewMode()" style="background: #1e293b; border: none; color: white; padding: 8px; border-radius: 8px;"><span id="mode-icon">🌙</span></button>
+            <div style="background: rgba(139, 92, 246, 0.2); padding: 8px 12px; border-radius: 10px; display: flex; align-items: center; gap: 5px;">
+                <button onclick="app.changeMonth(-1)" style="color: #8b5cf6; background: none; border: none; font-weight: 900;">◀</button>
+                <span id="current-month" style="font-size: 10px; font-weight: 800; text-transform: uppercase;">Janeiro 2024</span>
+                <button onclick="app.changeMonth(1)" style="color: #8b5cf6; background: none; border: none; font-weight: 900;">▶</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        
+        <!-- DASHBOARD -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6" id="stats-grid">
+            <!-- Dinâmico -->
+        </div>
+
+        <!-- SALDO -->
+        <div class="glass">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="font-size: 12px; font-weight: 900; color: #8b5cf6;" class="uppercase">💵 Gestão de Saldo</h3>
+                <span id="label-saldo" style="font-weight: 900; color: #10b981;">R$ 0,00</span>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <input type="number" id="in-saldo" class="input-box" style="margin: 0;" placeholder="Valor R$">
+                <button onclick="app.addSaldo()" style="background: #10b981; border: none; color: white; padding: 10px 20px; border-radius: 8px; font-weight: 900;">ADICIONAR</button>
+                <button onclick="app.distribuir()" style="background: #8b5cf6; border: none; color: white; padding: 10px 20px; border-radius: 8px; font-weight: 900;">DISTRIBUIR</button>
+            </div>
+        </div>
+
+        <!-- FORMULARIO -->
+        <div class="glass">
+            <h3 style="font-size: 12px; font-weight: 900; color: #3b82f6; margin-bottom: 15px;" class="uppercase">➕ Novo Lançamento</h3>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                <select id="in-icon" class="input-box"><option value="💡">💡 Luz</option><option value="🏠">🏠 Aluguel</option><option value="💳">💳 Cartão</option><option value="💰">💰 Outro</option></select>
+                <input type="text" id="in-nome" class="input-box" placeholder="Nome da Conta">
+                <input type="number" id="in-valor" class="input-box" placeholder="Valor Total">
+                <input type="date" id="in-data" class="input-box">
+                <input type="number" id="in-parc" class="input-box" value="1" placeholder="Parcelas">
+                <button onclick="app.saveAccount()" class="btn-primary col-span-full">Salvar na Nuvem</button>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div style="display: flex; gap: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px;">
+            <div class="tab-btn active" id="btn-kanban" onclick="app.setTab('kanban')">KANBAN</div>
+            <div class="tab-btn" id="btn-grafico" onclick="app.setTab('grafico')">GRÁFICOS</div>
+        </div>
+
+        <!-- KANBAN -->
+        <div id="view-kanban">
+            <div class="kanban-board">
+                <div class="kanban-column">
+                    <p style="font-size: 10px; font-weight: 900; color: #ef4444; border-bottom: 1px solid rgba(239, 68, 68, 0.2); padding-bottom: 5px; margin-bottom: 15px;">🔴 PENDENTES</p>
+                    <div id="col-pend" class="space-y-3"></div>
+                </div>
+                <div class="kanban-column">
+                    <p style="font-size: 10px; font-weight: 900; color: #f59e0b; border-bottom: 1px solid rgba(245, 158, 11, 0.2); padding-bottom: 5px; margin-bottom: 15px;">🟡 EM DIA</p>
+                    <div id="col-dia" class="space-y-3"></div>
+                </div>
+                <div class="kanban-column">
+                    <p style="font-size: 10px; font-weight: 900; color: #10b981; border-bottom: 1px solid rgba(16, 185, 129, 0.2); padding-bottom: 5px; margin-bottom: 15px;">🟢 PAGAS</p>
+                    <div id="col-pago" class="space-y-3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRAFICO -->
+        <div id="view-grafico" class="hidden">
+            <div class="glass">
+                <canvas id="chartFin"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAZ6Zp-XRhmJaqyrA806YxGAYo3TyFttpQ",
+            authDomain: "b-dados-sistema.firebaseapp.com",
+            projectId: "b-dados-sistema",
+            storageBucket: "b-dados-sistema.firebasestorage.app",
+            messagingSenderId: "725143488446",
+            appId: "1:725143488446:web:ab7178929e9c9b8dcf9bef"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const app = {
+            user: null, currentMonth: new Date(), data: [],
+            
+            async init() {
+                const session = localStorage.getItem('v35_session');
+                if(!session) { alert("Sessão expirada. Logue novamente."); location.href='index.html'; return; }
+                this.user = JSON.parse(session);
+                this.renderMonth();
+                await this.load();
+                document.getElementById('loading-screen').classList.add('hidden');
+            },
+
+            async load() {
+                const mk = this.getMK(this.currentMonth);
+                const snap = await db.collection('debts').where('seller','==',this.user.id).where('monthKey','==',mk).get();
+                this.data = snap.docs.map(d => ({id:d.id, ...d.data()}));
+                this.render();
+            },
+
+            render() {
+                const regular = this.data.filter(x => !x.isBalance);
+                const total = regular.reduce((s,v) => s + v.valor, 0);
+                const pago = regular.reduce((s,v) => s + (v.pago||0), 0);
+                const balance = this.data.find(x => x.isBalance)?.valor || 0;
+
+                // Dashboard
+                document.getElementById('stats-grid').innerHTML = `
+                    <div class="stat-card"><p style="font-size: 9px; font-weight: 800; color: #64748b;">TOTAL</p><h3 style="font-weight: 900;">${this.fmt(total)}</h3></div>
+                    <div class="stat-card"><p style="font-size: 9px; font-weight: 800; color: #10b981;">PAGO</p><h3 style="font-weight: 900;">${this.fmt(pago)}</h3></div>
+                    <div class="stat-card"><p style="font-size: 9px; font-weight: 800; color: #ef4444;">FALTA</p><h3 style="font-weight: 900;">${this.fmt(total-pago)}</h3></div>
+                    <div class="stat-card"><p style="font-size: 9px; font-weight: 800; color: #8b5cf6;">SALDO</p><h3 style="font-weight: 900;">${this.fmt(balance)}</h3></div>
+                `;
+
+                document.getElementById('label-saldo').innerText = this.fmt(balance);
+
+                // Kanban
+                const cols = {p:'', d:'', g:''};
+                regular.forEach(i => {
+                    const p = ((i.pago||0) / i.valor) * 100;
+                    const html = `
+                        <div class="kanban-card" style="border-left-color: ${p>=100?'#10b981':p>0?'#f59e0b':'#ef4444'}">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <span style="font-weight: 800; font-size: 13px;">${i.icon} ${i.nome}</span>
+                                <span style="font-weight: 900; font-size: 13px;">${this.fmt(i.valor)}</span>
+                            </div>
+                            <div style="width: 100%; background: rgba(0,0,0,0.3); height: 6px; border-radius: 10px; overflow: hidden; margin-bottom: 10px;">
+                                <div style="width: ${p}%; background: #3b82f6; height: 100%;"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 9px; color: #64748b; font-weight: 700;">VENC: ${i.data.split('-').reverse().join('/')}</span>
+                                <div style="display: flex; gap: 10px;">
+                                    <button onclick="app.del('${i.id}')" style="background: none; border: none; color: #ef4444; font-size: 10px; font-weight: 900; text-decoration: underline;">APAGAR</button>
+                                    ${p < 100 ? `<button onclick="app.pay('${i.id}')" style="background: #3b82f6; border: none; color: white; padding: 4px 8px; border-radius: 5px; font-size: 10px; font-weight: 900;">QUITAR</button>` : ''}
+                                </div>
+                            </div>
+                        </div>`;
+                    if(p >= 100) cols.g += html; else if(p > 0) cols.d += html; else cols.p += html;
+                });
+                document.getElementById('col-pend').innerHTML = cols.p || '<p style="text-align: center; font-size: 10px; color: #475569;">Vazio</p>';
+                document.getElementById('col-dia').innerHTML = cols.d || '<p style="text-align: center; font-size: 10px; color: #475569;">Vazio</p>';
+                document.getElementById('col-pago').innerHTML = cols.g || '<p style="text-align: center; font-size: 10px; color: #475569;">Vazio</p>';
+            },
+
+            async saveAccount() {
+                const nome = document.getElementById('in-nome').value.toUpperCase();
+                const valor = parseFloat(document.getElementById('in-valor').value);
+                const data = document.getElementById('in-data').value;
+                const parc = parseInt(document.getElementById('in-parc').value) || 1;
+                if(!nome || !valor || !data) return alert("Preencha todos os campos!");
+
+                document.getElementById('loading-screen').classList.remove('hidden');
+                for(let i=0; i<parc; i++) {
+                    const d = new Date(data + 'T12:00:00'); d.setMonth(d.getMonth() + i);
+                    await db.collection('debts').add({
+                        seller: this.user.id, nome: parc > 1 ? `${nome} (${i+1}/${parc})` : nome,
+                        valor: valor / parc, pago: 0, icon: document.getElementById('in-icon').value,
+                        data: d.toISOString().split('T')[0], monthKey: this.getMK(d), isBalance: false
+                    });
+                }
+                location.reload();
+            },
+
+            async pay(id) {
+                const item = this.data.find(x => x.id === id);
+                await db.collection('debts').doc(id).update({ pago: item.valor });
+                this.load();
+            },
+
+            async del(id) { if(confirm("Remover conta?")) { await db.collection('debts').doc(id).delete(); this.load(); } },
+
+            async addSaldo() {
+                const v = parseFloat(document.getElementById('in-saldo').value); if(!v) return;
+                const item = this.data.find(x => x.isBalance);
+                if(item) await db.collection('debts').doc(item.id).update({ valor: item.valor + v });
+                else await db.collection('debts').add({ seller: this.user.id, isBalance: true, valor: v, monthKey: this.getMK(this.currentMonth) });
+                document.getElementById('in-saldo').value = ""; this.load();
+            },
+
+            async distribuir() {
+                const itemSaldo = this.data.find(x => x.isBalance);
+                if(!itemSaldo || itemSaldo.valor <= 0) return alert("Sem saldo disponível!");
+                let resto = itemSaldo.valor;
+                const contas = this.data.filter(x => !x.isBalance && x.pago < x.valor).sort((a,b) => a.data.localeCompare(b.data));
+                for(let c of contas) {
+                    if(resto <= 0) break;
+                    let falta = c.valor - c.pago; let pagar = Math.min(falta, resto);
+                    await db.collection('debts').doc(c.id).update({ pago: c.pago + pagar });
+                    resto -= pagar;
+                }
+                await db.collection('debts').doc(itemSaldo.id).update({ valor: resto });
+                this.load();
+            },
+
+            getMK(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; },
+            renderMonth() {
+                const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+                document.getElementById('current-month').innerText = `${meses[this.currentMonth.getMonth()]} ${this.currentMonth.getFullYear()}`;
+            },
+            changeMonth(n) { this.currentMonth.setMonth(this.currentMonth.getMonth() + n); this.renderMonth(); this.load(); },
+            fmt(v) { return v.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); },
+            setTab(t) {
+                document.getElementById('view-kanban').classList.toggle('hidden', t !== 'kanban');
+                document.getElementById('view-grafico').classList.toggle('hidden', t !== 'grafico');
+                document.getElementById('btn-kanban').classList.toggle('active', t === 'kanban');
+                document.getElementById('btn-grafico').classList.toggle('active', t === 'grafico');
+                if(t === 'grafico') this.renderChart();
+            },
+            toggleViewMode() { document.body.classList.toggle('notion-mode'); document.getElementById('mode-icon').innerText = document.body.classList.contains('notion-mode') ? '☀️' : '🌙'; },
+            renderChart() {
+                const ctx = document.getElementById('chartFin').getContext('2d');
+                if(window.myChart) window.myChart.destroy();
+                const reg = this.data.filter(x => !x.isBalance);
+                window.myChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: { labels: ['Pagas', 'Pendentes'], datasets: [{ data: [reg.reduce((s,v)=>s+v.pago,0), reg.reduce((s,v)=>s+(v.valor-v.pago),0)], backgroundColor: ['#10b981', '#ef4444'] }] },
+                    options: { plugins: { legend: { labels: { color: document.body.classList.contains('notion-mode') ? '#333' : '#fff' } } } }
+                });
+            }
+        };
+
+        app.init();
+    </script>
+</body>
+</html>
