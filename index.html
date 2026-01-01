@@ -7,6 +7,7 @@
     <title>Sales Force V35 - Oficial Cloud</title>
     
     <!-- PWA: CONFIGURAÇÃO APP NATIVO -->
+    <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -41,7 +42,7 @@
 
     <div id="loading">
         <div class="spinner"></div>
-        <p class="mt-4 text-[10px] text-blue-400 font-bold uppercase animate-pulse tracking-widest text-center px-6">Sincronizando Sistema v36.9.4...</p>
+        <p class="mt-4 text-[10px] text-blue-400 font-bold uppercase animate-pulse tracking-widest text-center px-6">Sincronizando Cloud v36.9.8...</p>
     </div>
 
     <div id="toast" class="fixed top-5 right-5 z-[9999] bg-gray-800 border-l-4 border-green-500 text-white px-6 py-4 rounded-xl shadow-2xl hidden"><span id="toast-msg" class="font-bold text-sm"></span></div>
@@ -65,7 +66,7 @@
             <div class="flex items-center gap-3">
                 <img src="https://i.postimg.cc/MTGzyVGF/file-0000000092c471f5b7a5391ae5ba35f5-1.png" class="w-12 h-12 rounded-lg border border-gray-700 shadow-lg">
                 <div>
-                    <p class="text-gray-500 text-[9px] uppercase font-bold tracking-widest leading-none" id="u-role-label">Painel Online</p>
+                    <p class="text-gray-500 text-[9px] uppercase font-bold tracking-widest leading-none">Painel Cloud v35</p>
                     <h2 class="text-xl font-black text-white uppercase leading-none" id="u-name">...</h2>
                 </div>
             </div>
@@ -76,6 +77,12 @@
             
             <!-- ABA HOME -->
             <div id="tab-home" class="space-y-6">
+                <div id="store-goal-area" class="glass p-5 rounded-3xl border-l-4 border-amber-500 hidden shadow-xl">
+                    <div class="flex justify-between items-center mb-1"><span class="text-[10px] font-black uppercase text-amber-500 tracking-widest">Meta Global da Loja</span><span class="text-xs font-black" id="store-goal-pct">0%</span></div>
+                    <div class="bar-bg mb-2"><div id="store-bar-fill" class="bar-fill bg-amber-500" style="width: 0%"></div></div>
+                    <p class="text-[10px] text-gray-500 text-center font-black uppercase tracking-tighter" id="store-goal-text">Sincronizando loja...</p>
+                </div>
+
                 <div class="grid grid-cols-2 gap-3 text-center">
                     <div class="glass p-5 rounded-2xl border-l-4 border-blue-500 shadow-xl"><p class="text-[9px] text-blue-400 font-bold uppercase tracking-widest">Vendido Mês</p><h3 class="text-xl font-black text-white" id="d-total">R$ 0,00</h3></div>
                     <div class="glass p-5 rounded-2xl border-l-4 border-green-500 shadow-xl"><p class="text-[9px] text-green-400 font-bold uppercase tracking-widest">Comissão (2.2%)</p><h3 class="text-xl font-black text-white" id="d-my-profit">R$ 0,00</h3></div>
@@ -91,7 +98,7 @@
                 </div>
 
                 <!-- RESUMO DE SERVIÇOS (8 CARDS FIXOS) -->
-                <h3 class="text-gray-500 text-[10px] font-black uppercase mb-2 pl-1 tracking-widest">Resumo do Mês Atual</h3>
+                <h3 class="text-gray-500 text-[10px] font-black uppercase mb-2 pl-1 tracking-widest">Resumo Detalhado (Mês)</h3>
                 <div class="grid grid-cols-2 gap-3" id="resumo-grid">
                     <div class="glass p-4 rounded-xl border-b border-gray-700 shadow-md text-center"><span class="text-[9px] text-blue-400 font-bold block uppercase tracking-tighter">Monetário 2.2%</span><span class="text-lg font-black text-white" id="r-cprod">R$ 0</span></div>
                     <div class="glass p-4 rounded-xl border-b border-gray-700 shadow-md text-center"><span class="text-[9px] text-green-400 font-bold block uppercase tracking-tighter">Assistência</span><span class="text-lg font-black text-white" id="r-assist">R$ 0</span></div>
@@ -116,7 +123,7 @@
                 <div id="list-sales" class="space-y-3 pb-10"></div>
             </div>
 
-            <!-- ABA NOVIDADES (RESTAURADA!) -->
+            <!-- ABA NOVIDADES -->
             <div id="tab-news" class="hidden space-y-6">
                 <h3 class="text-gray-500 text-[10px] font-bold uppercase mb-4 pl-1 tracking-widest text-center">Próximas Atualizações</h3>
                 <div class="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 rounded-3xl shadow-2xl border border-white/10">
@@ -125,15 +132,6 @@
                         <div>
                             <h4 class="font-black uppercase text-sm text-white">Gestão Financeira</h4>
                             <p class="text-[10px] text-purple-100 font-bold uppercase tracking-tighter">🚀 DISPONÍVEL EM BREVE</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-gradient-to-r from-blue-600 to-cyan-600 p-6 rounded-3xl shadow-2xl border border-white/10">
-                    <div class="flex items-center gap-4">
-                        <div class="bg-white/20 p-3 rounded-2xl"><i class="fas fa-users-cog text-2xl text-white"></i></div>
-                        <div>
-                            <h4 class="font-black uppercase text-sm text-white">Gestão Gerencial</h4>
-                            <p class="text-[10px] text-blue-100 font-bold uppercase tracking-tighter">🚀 DISPONÍVEL EM BREVE</p>
                         </div>
                     </div>
                 </div>
@@ -206,24 +204,21 @@
                 <button onclick="sys.saveConfig()" class="w-full bg-blue-600 font-black py-4 rounded-xl shadow-lg uppercase text-xs active:scale-95 transition">Salvar na Nuvem</button>
             </div>
 
-            <!-- ADMIN MASTER (CADASTRO DE GERENTE E AVULSO) -->
+            <!-- ADMIN MASTER -->
             <div id="tab-admin" class="hidden space-y-6 pb-32 text-center">
                 <div class="glass p-6 rounded-[2rem] shadow-xl border border-blue-500">
                     <h3 class="font-black text-xs uppercase mb-4 text-blue-400 tracking-widest">Novo Gerente de Loja</h3>
-                    <input type="text" id="adm-new-mgr" class="input-box uppercase font-bold mb-2" placeholder="NOME DO GERENTE">
-                    <input type="password" id="adm-new-pass" class="input-box mb-2" placeholder="SENHA">
+                    <input type="text" id="adm-new-mgr" class="input-box uppercase mb-2 font-bold" placeholder="NOME DO GERENTE">
+                    <input type="password" id="adm-new-pass" class="input-box mb-2 font-bold" placeholder="SENHA">
                     <input type="text" id="adm-new-store" class="input-box uppercase mb-3 font-bold" placeholder="NOME DA LOJA">
                     <button onclick="sys.adminCreateManager()" class="w-full bg-blue-600 font-black py-4 rounded-xl uppercase text-xs">Criar Unidade</button>
                 </div>
-                
-                <!-- CADASTRO DE VENDEDOR AVULSO (RESTAURADO!) -->
                 <div class="glass p-6 rounded-[2rem] shadow-xl border border-green-500">
                     <h3 class="font-black text-xs uppercase mb-4 text-green-400 tracking-widest">Novo Vendedor Avulso</h3>
                     <input type="text" id="adm-new-seller" class="input-box uppercase mb-2 font-bold" placeholder="NOME DO VENDEDOR">
                     <input type="password" id="adm-new-pass-seller" class="input-box mb-3 font-bold" placeholder="SENHA">
                     <button onclick="sys.adminCreateSeller()" class="w-full bg-green-600 font-black py-3 rounded-xl uppercase text-xs font-black">Criar Avulso</button>
                 </div>
-
                 <h3 class="text-xs font-black text-blue-400 uppercase tracking-widest ml-1 mt-6 text-left">Mensalidades da Rede</h3>
                 <div id="adm-user-list" class="space-y-3"></div>
             </div>
@@ -274,7 +269,19 @@
         </div>
     </div>
 
+    <div id="modal-periodo" class="fixed inset-0 z-[120] hidden items-center justify-center bg-black/95 p-4 backdrop-blur-sm text-center font-black uppercase">
+        <div class="bg-[#1e293b] w-full max-w-sm rounded-[2.5rem] border border-blue-500/30 overflow-hidden shadow-2xl">
+            <div id="period-details-body" class="p-8 space-y-4 text-sm"></div>
+            <button onclick="sys.closeModal('modal-periodo')" class="text-gray-500 py-6 font-black uppercase tracking-widest underline">Fechar Relatório</button>
+        </div>
+    </div>
+
     <script>
+        // GATILHO PWA: REGISTRO DO SERVICE WORKER
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(() => console.log("PWA Ativo"));
+        }
+
         const firebaseConfig = {
             apiKey: "AIzaSyAZ6Zp-XRhmJaqyrA806YxGAYo3TyFttpQ",
             authDomain: "b-dados-sistema.firebaseapp.com",
@@ -450,7 +457,7 @@
                 const snap = await db.collection('users').get();
                 const list = document.getElementById('adm-user-list'); list.innerHTML = "";
                 snap.forEach(doc => {
-                    const u = doc.data(); if(u.r==='admin') return;
+                    const u = doc.data(); if(u.id === 'admin') return;
                     const dias = Math.max(0, Math.ceil((u.exp - Date.now()) / 86400000));
                     list.innerHTML += `<div class="glass p-4 rounded-2xl mb-3 border border-gray-700 shadow-xl text-left"><div class="flex justify-between items-center mb-3"><div><span class="font-black uppercase text-sm">${doc.id}</span> <span class="text-[9px] text-gray-500">(${u.r})</span> ${u.b?'🔴':'🟢'}</div><span class="text-blue-400 font-black text-xs">${dias} Dias</span></div><div class="grid grid-cols-2 gap-2"><select id="months-${doc.id}" class="input-box p-1 text-xs bg-gray-900 border-gray-600 font-black"><option value="1">+ 1 Mês</option><option value="3">+ 3 Meses</option><option value="6">+ 6 Meses</option><option value="12">+ 1 Ano</option></select><button onclick="sys.adminAddMonths('${doc.id}')" class="bg-green-600 rounded-lg text-[9px] font-black uppercase py-1 shadow-lg">Add Crédito</button><button onclick="sys.adminToggle('${doc.id}')" class="bg-gray-700 rounded-lg text-[9px] font-black uppercase py-2 tracking-tighter">${u.b?'Ativar':'Bloquear'}</button><button onclick="sys.adminDelUser('${doc.id}')" class="bg-red-900/30 text-red-500 rounded-lg text-[9px] font-black uppercase py-2 tracking-tighter">Apagar</button></div></div>`;
                 });
