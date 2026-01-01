@@ -1,0 +1,3259 @@
+<!doctype html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle de Contas Pro - Versão 74</title>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f172a;
+      min-height: 100%;
+      height: 100%;
+      width: 100%;
+      color: #f8fafc;
+      transition: background 0.3s ease, color 0.3s ease;
+      overflow-x: hidden;
+    }
+
+    body.notion-mode {
+      background: #ffffff;
+      color: #37352f;
+    }
+
+    html {
+      height: 100%;
+      width: 100%;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .app-container {
+      width: 100%;
+      min-height: 100%;
+      padding: 100px 24px 32px 24px;
+      background: #0f172a;
+      position: relative;
+      transition: background 0.3s ease;
+    }
+
+    body.notion-mode .app-container {
+      background: #ffffff;
+    }
+
+    .top-actions-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 23, 42, 0.98);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(139, 92, 246, 0.3);
+      padding: 12px 20px;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 4px 20px rgba(139, 92, 246, 0.2);
+      flex-wrap: wrap;
+    }
+
+    body.notion-mode .top-actions-bar {
+      background: rgba(255, 255, 255, 0.98);
+      border-bottom-color: rgba(0, 0, 0, 0.06);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .top-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .app-logo {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+
+    body.notion-mode .app-logo {
+      background: none;
+      -webkit-text-fill-color: #37352f;
+      color: #37352f;
+    }
+
+    .month-selector-compact {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(139, 92, 246, 0.15);
+      padding: 6px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    body.notion-mode .month-selector-compact {
+      background: rgba(0, 0, 0, 0.03);
+      border-color: rgba(0, 0, 0, 0.06);
+    }
+
+    .month-nav-btn-compact {
+      background: none;
+      border: none;
+      color: #8b5cf6;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      font-weight: 800;
+    }
+
+    body.notion-mode .month-nav-btn-compact {
+      color: #37352f;
+      opacity: 0.6;
+    }
+
+    body.notion-mode .month-nav-btn-compact:hover {
+      background: rgba(0, 0, 0, 0.05);
+      opacity: 1;
+    }
+
+    .month-nav-btn-compact:hover {
+      background: rgba(139, 92, 246, 0.2);
+      transform: scale(1.1);
+    }
+
+    .current-month-compact {
+      font-size: 14px;
+      font-weight: 700;
+      color: #f8fafc;
+      min-width: 120px;
+      text-align: center;
+    }
+
+    body.notion-mode .current-month-compact {
+      color: #37352f;
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .version-badge {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(6, 182, 212, 0.3) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.5);
+      color: #c4b5fd;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    body.notion-mode .version-badge {
+      background: rgba(0, 0, 0, 0.05);
+      border-color: rgba(0, 0, 0, 0.1);
+      color: rgba(55, 53, 47, 0.65);
+    }
+
+    .icon-btn {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      color: #f8fafc;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      position: relative;
+    }
+
+    body.notion-mode .icon-btn {
+      background: rgba(0, 0, 0, 0.04);
+      border-color: rgba(0, 0, 0, 0.08);
+      color: #37352f;
+    }
+
+    body.notion-mode .icon-btn:hover {
+      background: rgba(0, 0, 0, 0.08);
+    }
+
+    .icon-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    }
+
+    .icon-btn.primary {
+      background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+      border-color: #06b6d4;
+      color: #ffffff;
+    }
+
+    body.notion-mode .icon-btn.primary {
+      background: #2383e2;
+      border-color: #2383e2;
+      color: #ffffff;
+    }
+
+    body.notion-mode .icon-btn.primary:hover {
+      background: #1a6dc7;
+    }
+
+    .icon-btn.primary:hover {
+      box-shadow: 0 4px 16px rgba(6, 182, 212, 0.6);
+    }
+
+    .icon-btn.warning {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      border-color: #f59e0b;
+      color: #ffffff;
+    }
+
+    body.notion-mode .icon-btn.warning {
+      background: #eb9c28;
+      border-color: #eb9c28;
+      color: #ffffff;
+    }
+
+    body.notion-mode .icon-btn.warning:hover {
+      background: #d88619;
+    }
+
+    .icon-btn.warning:hover {
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.6);
+    }
+
+    .icon-btn.danger {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      border-color: #ef4444;
+      color: #ffffff;
+    }
+
+    body.notion-mode .icon-btn.danger {
+      background: #eb5757;
+      border-color: #eb5757;
+      color: #ffffff;
+    }
+
+    body.notion-mode .icon-btn.danger:hover {
+      background: #d93a3a;
+    }
+
+    .icon-btn.danger:hover {
+      box-shadow: 0 4px 16px rgba(239, 68, 68, 0.6);
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: #ef4444;
+      color: #ffffff;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 800;
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.6);
+      animation: pulse 2s infinite;
+      border: 2px solid #0f172a;
+    }
+
+    body.notion-mode .notification-badge {
+      border-color: #ffffff;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    .content-wrapper {
+      max-width: 1800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .dashboard-compact {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card-compact {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    body.notion-mode .stat-card-compact {
+      background: #ffffff;
+      border-color: rgba(0, 0, 0, 0.08);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+
+    .stat-card-compact:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+    }
+
+    body.notion-mode .stat-card-compact:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-card-compact-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .stat-card-compact-icon {
+      font-size: 18px;
+    }
+
+    .stat-card-compact-title {
+      font-size: 11px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    body.notion-mode .stat-card-compact-title {
+      color: rgba(55, 53, 47, 0.65);
+    }
+
+    .stat-card-compact-value {
+      font-size: 24px;
+      font-weight: 800;
+      color: #f8fafc;
+      letter-spacing: -0.5px;
+    }
+
+    body.notion-mode .stat-card-compact-value {
+      color: #37352f;
+    }
+
+    .deposit-section {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    body.notion-mode .deposit-section {
+      background: #ffffff;
+      border-color: rgba(0, 0, 0, 0.08);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+
+    .deposit-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    body.notion-mode .deposit-title {
+      color: #37352f;
+    }
+
+    .deposit-controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .deposit-input-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .deposit-input-group label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+
+    body.notion-mode .deposit-input-group label {
+      color: rgba(55, 53, 47, 0.65);
+    }
+
+    .deposit-input-group input {
+      width: 130px;
+      padding: 10px 14px;
+      border: 2px solid rgba(139, 92, 246, 0.3);
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      background: rgba(15, 23, 42, 0.5);
+      color: #f8fafc;
+      transition: all 0.3s ease;
+    }
+
+    body.notion-mode .deposit-input-group input {
+      background: #ffffff;
+      color: #37352f;
+      border-color: rgba(0, 0, 0, 0.12);
+    }
+
+    .deposit-input-group input:focus {
+      outline: none;
+      border-color: #8b5cf6;
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+    }
+
+    body.notion-mode .deposit-input-group input:focus {
+      border-color: #2383e2;
+      box-shadow: 0 0 0 2px rgba(35, 131, 226, 0.1);
+    }
+
+    .deposit-btn {
+      background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+      white-space: nowrap;
+    }
+
+    body.notion-mode .deposit-btn {
+      background: #2383e2;
+      box-shadow: none;
+    }
+
+    body.notion-mode .deposit-btn:hover {
+      background: #1a6dc7;
+    }
+
+    .deposit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
+    }
+
+    .deposit-btn:disabled {
+      background: linear-gradient(135deg, #475569 0%, #334155 100%);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    body.notion-mode .deposit-btn:disabled {
+      background: rgba(55, 53, 47, 0.3);
+    }
+
+    .use-balance-btn {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+      white-space: nowrap;
+    }
+
+    body.notion-mode .use-balance-btn {
+      background: #eb9c28;
+      box-shadow: none;
+    }
+
+    body.notion-mode .use-balance-btn:hover {
+      background: #d88619;
+    }
+
+    .use-balance-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+    }
+
+    .use-balance-btn:disabled {
+      background: linear-gradient(135deg, #475569 0%, #334155 100%);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    body.notion-mode .use-balance-btn:disabled {
+      background: rgba(55, 53, 47, 0.3);
+    }
+
+    .balance-card {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
+      border: 2px solid rgba(251, 191, 36, 0.5);
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .balance-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
+      opacity: 1;
+    }
+
+    .quick-actions-section {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    body.notion-mode .quick-actions-section {
+      background: #ffffff;
+      border-color: rgba(0, 0, 0, 0.08);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+
+    .quick-actions-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .quick-actions-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    body.notion-mode .quick-actions-title {
+      color: #37352f;
+    }
+
+    .quick-form {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto auto auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .form-field-inline {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-field-inline label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: 0.3px;
+    }
+
+    body.notion-mode .form-field-inline label {
+      color: rgba(55, 53, 47, 0.65);
+    }
+
+    .form-field-inline select,
+    .form-field-inline input {
+      padding: 10px 14px;
+      border: 2px solid rgba(139, 92, 246, 0.3);
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      background: rgba(15, 23, 42, 0.5);
+      color: #f8fafc;
+      transition: all 0.3s ease;
+    }
+
+    body.notion-mode .form-field-inline select,
+    body.notion-mode .form-field-inline input {
+      background: #ffffff;
+      color: #37352f;
+      border-color: rgba(0, 0, 0, 0.12);
+    }
+
+    .form-field-inline input:focus,
+    .form-field-inline select:focus {
+      outline: none;
+      border-color: #8b5cf6;
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+    }
+
+    body.notion-mode .form-field-inline input:focus,
+    body.notion-mode .form-field-inline select:focus {
+      border-color: #2383e2;
+      box-shadow: 0 0 0 2px rgba(35, 131, 226, 0.1);
+    }
+
+    .add-btn-inline {
+      background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+      white-space: nowrap;
+    }
+
+    body.notion-mode .add-btn-inline {
+      background: #2383e2;
+      box-shadow: none;
+    }
+
+    body.notion-mode .add-btn-inline:hover {
+      background: #1a6dc7;
+    }
+
+    .add-btn-inline:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
+    }
+
+    .add-btn-inline:disabled {
+      background: linear-gradient(135deg, #475569 0%, #334155 100%);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    body.notion-mode .add-btn-inline:disabled {
+      background: rgba(55, 53, 47, 0.3);
+    }
+
+    /* KANBAN BOARD STYLES */
+    .kanban-board {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .kanban-board.trello-layout {
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .kanban-board.notion-layout {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .notion-table {
+      width: 100%;
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      overflow-x: auto;
+    }
+
+    body.notion-mode .notion-table {
+      background: #ffffff;
+      border-color: rgba(0, 0, 0, 0.08);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+
+    .notion-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .notion-table th {
+      background: rgba(139, 92, 246, 0.15);
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 800;
+      color: #f8fafc;
+      border-bottom: 2px solid rgba(139, 92, 246, 0.3);
+      white-space: nowrap;
+    }
+
+    body.notion-mode .notion-table th {
+      background: rgba(0, 0, 0, 0.04);
+      color: rgba(55, 53, 47, 0.65);
+      border-bottom-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .notion-table td {
+      padding: 16px;
+      border-bottom: 1px solid rgba(139, 92, 246, 0.15);
+      color: #f8fafc;
+      font-size: 14px;
+    }
+
+    body.notion-mode .notion-table td {
+      border-bottom-color: rgba(0, 0, 0, 0.06);
+      color: #37352f;
+    }
+
+    .notion-table tr:hover {
+      background: rgba(139, 92, 246, 0.08);
+    }
+
+    body.notion-mode .notion-table tr:hover {
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    .notion-status {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .notion-status.pending {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+    }
+
+    body.notion-mode .notion-status.pending {
+      background: rgba(235, 87, 87, 0.1);
+      color: #eb5757;
+    }
+
+    .notion-status.in-progress {
+      background: rgba(251, 191, 36, 0.2);
+      color: #fde047;
+    }
+
+    body.notion-mode .notion-status.in-progress {
+      background: rgba(235, 152, 40, 0.1);
+      color: #eb9828;
+    }
+
+    .notion-status.almost-there {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+    }
+
+    body.notion-mode .notion-status.almost-there {
+      background: rgba(235, 152, 40, 0.15);
+      color: #d88619;
+    }
+
+    .notion-status.completed {
+      background: rgba(16, 185, 129, 0.2);
+      color: #6ee7b7;
+    }
+
+    body.notion-mode .notion-status.completed {
+      background: rgba(15, 123, 108, 0.1);
+      color: #0f7b6c;
+    }
+
+    .notion-progress-mini {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .notion-progress-bar-mini {
+      flex: 1;
+      height: 8px;
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    body.notion-mode .notion-progress-bar-mini {
+      background: rgba(0, 0, 0, 0.08);
+    }
+
+    .notion-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #8b5cf6 0%, #06b6d4 100%);
+      transition: width 0.3s ease;
+    }
+
+    body.notion-mode .notion-progress-fill {
+      background: #2383e2;
+    }
+
+    .notion-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .notion-btn-small {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .notion-btn-small.delete {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #ffffff;
+    }
+
+    body.notion-mode .notion-btn-small.delete {
+      background: #eb5757;
+    }
+
+    body.notion-mode .notion-btn-small.delete:hover {
+      background: #d93a3a;
+    }
+
+    .notion-btn-small:hover {
+      transform: translateY(-1px);
+    }
+
+    .kanban-column {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(51, 65, 85, 0.8) 100%);
+      border-radius: 16px;
+      padding: 16px;
+      min-height: 500px;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    body.notion-mode .kanban-column {
+      background: rgba(0, 0, 0, 0.02);
+      border-color: rgba(0, 0, 0, 0.08);
+    }
+
+    .kanban-column.drag-over {
+      background: rgba(139, 92, 246, 0.2);
+      border-color: #8b5cf6;
+      box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+    }
+
+    body.notion-mode .kanban-column.drag-over {
+      background: rgba(35, 131, 226, 0.08);
+      border-color: #2383e2;
+      box-shadow: none;
+    }
+
+    .kanban-column-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid rgba(139, 92, 246, 0.3);
+    }
+
+    body.notion-mode .kanban-column-header {
+      border-bottom-color: rgba(0, 0, 0, 0.08);
+    }
+
+    .kanban-column-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 800;
+      color: #f8fafc;
+    }
+
+    body.notion-mode .kanban-column-title {
+      color: #37352f;
+    }
+
+    .kanban-column-count {
+      background: rgba(139, 92, 246, 0.2);
+      color: #c4b5fd;
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    body.notion-mode .kanban-column-count {
+      background: rgba(0, 0, 0, 0.06);
+      color: rgba(55, 53, 47, 0.65);
+    }
+
+    .kanban-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 100px;
+    }
+
+    .kanban-card {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      border-radius: 12px;
+      padding: 16px;
+      border: 2px solid rgba(139, 92, 246, 0.3);
+      cursor: grab;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+
+    body.notion-mode .kanban-card {
+      background: #ffffff;
+      border-color: rgba(0, 0, 0, 0.12);
+      box-shadow: none;
+    }
+
+    .kanban-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+      border-color: #8b5cf6;
+    }
+
+    body.notion-mode .kanban-card:hover {
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      border-color: rgba(0, 0, 0, 0.16);
+    }
+
+    .kanban-card.dragging {
+      opacity: 0.5;
+      cursor: grabbing;
+      transform: rotate(3deg);
+    }
+
+    .kanban-card.completed {
+      border-color: rgba(6, 182, 212, 0.5);
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(6, 182, 212, 0.2) 100%);
+    }
+
+    body.notion-mode .kanban-card.completed {
+      border-color: rgba(35, 131, 226, 0.3);
+      background: rgba(35, 131, 226, 0.04);
+    }
+
+    .kanban-card.overdue {
+      border-color: rgba(239, 68, 68, 0.6);
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(239, 68, 68, 0.2) 100%);
+      animation: urgentPulse 2s ease-in-out infinite;
+    }
+
+    body.notion-mode .kanban-card.overdue {
+      border-color: rgba(235, 87, 87, 0.4);
+      background: rgba(235, 87, 87, 0.06);
+    }
+
+    @keyframes urgentPulse {
+      0%, 100% {
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+      }
+      50% {
+        box-shadow: 0 0 30px rgba(239, 68, 68, 0.7);
+      }
+    }
+
+    .kanban-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 8px;
+    }
+
+    .kanban-card-title-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .kanban-card-icon {
+      font-size: 24px;
+    }
+
+    .kanban-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #f8fafc;
+      word-break: break-word;
+    }
+
+    body.notion-mode .kanban-card-title {
+      color: #37352f;
+    }
+
+    .kanban-card-target {
+      font-size: 15px;
+      font-weight: 800;
+      color: #8b5cf6;
+      white-space: nowrap;
+    }
+
+    body.notion-mode .kanban-card-target {
+      color: #2383e2;
+    }
+
+    .kanban-card-progress {
+      margin: 12px 0;
+    }
+
+    .progress-bar-container {
+      background: rgba(15, 23, 42, 0.8);
+      border-radius: 10px;
+      height: 20px;
+      margin-bottom: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      position: relative;
+    }
+
+    body.notion-mode .progress-bar-container {
+      background: rgba(0, 0, 0, 0.06);
+      border-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #8b5cf6 0%, #06b6d4 100%);
+      border-radius: 10px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(139, 92, 246, 0.5);
+    }
+
+    body.notion-mode .progress-bar {
+      background: #2383e2;
+      box-shadow: none;
+    }
+
+    .progress-bar.completed {
+      background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+    }
+
+    body.notion-mode .progress-bar.completed {
+      background: #0f7b6c;
+    }
+
+    .kanban-card-stats {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .kanban-stat {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 10px;
+      border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+
+    body.notion-mode .kanban-stat {
+      background: rgba(0, 0, 0, 0.03);
+      border-color: rgba(0, 0, 0, 0.06);
+    }
+
+    .kanban-stat-label {
+      font-size: 10px;
+      color: #94a3b8;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    body.notion-mode .kanban-stat-label {
+      color: rgba(55, 53, 47, 0.65);
+    }
+
+    .kanban-stat-value {
+      font-size: 13px;
+      font-weight: 800;
+      color: #f8fafc;
+    }
+
+    body.notion-mode .kanban-stat-value {
+      color: #37352f;
+    }
+
+    .kanban-card-due {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 10px;
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    body.notion-mode .kanban-card-due {
+      background: rgba(0, 0, 0, 0.03);
+      border-color: rgba(0, 0, 0, 0.06);
+      color: rgba(55, 53, 47, 0.65);
+    }
+
+    .kanban-card-due.overdue {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+
+    body.notion-mode .kanban-card-due.overdue {
+      background: rgba(235, 87, 87, 0.1);
+      border-color: rgba(235, 87, 87, 0.3);
+      color: #eb5757;
+    }
+
+    .kanban-card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .kanban-card-btn {
+      flex: 1;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .kanban-card-btn.edit {
+      background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+      color: #ffffff;
+    }
+
+    body.notion-mode .kanban-card-btn.edit {
+      background: #2383e2;
+      box-shadow: none;
+    }
+
+    body.notion-mode .kanban-card-btn.edit:hover {
+      background: #1a6dc7;
+    }
+
+    .kanban-card-btn.edit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(6, 182, 212, 0.5);
+    }
+
+    .kanban-card-btn.delete {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #ffffff;
+    }
+
+    body.notion-mode .kanban-card-btn.delete {
+      background: #eb5757;
+      box-shadow: none;
+    }
+
+    body.notion-mode .kanban-card-btn.delete:hover {
+      background: #d93a3a;
+    }
+
+    .kanban-card-btn.delete:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(239, 68, 68, 0.5);
+    }
+
+    .kanban-card-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .tabs-container {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid rgba(139, 92, 246, 0.2);
+      padding-bottom: 2px;
+      overflow-x: auto;
+    }
+
+    body.notion-mode .tabs-container {
+      border-bottom-color: rgba(0, 0, 0, 0.08);
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 8px 8px 0 0;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      position: relative;
+    }
+
+    body.notion-mode .tab-btn {
+      color: #64748b;
+    }
+
+    .tab-btn:hover {
+      background: rgba(139, 92, 246, 0.1);
+      color: #8b5cf6;
+    }
+
+    body.notion-mode .tab-btn:hover {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    .tab-btn.active {
+      background: rgba(139, 92, 246, 0.15);
+      color: #8b5cf6;
+      border-bottom: 3px solid #8b5cf6;
+    }
+
+    body.notion-mode .tab-btn.active {
+      background: rgba(0, 0, 0, 0.04);
+      color: #37352f;
+      border-bottom-color: #37352f;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .spinner {
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top: 3px solid #ffffff;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+      margin-left: 8px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      border-radius: 20px;
+      padding: 32px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80%;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      animation: slideUp 0.3s ease;
+    }
+
+    body.notion-mode .modal-content {
+      background: #ffffff;
+      border-color: rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+    }
+
+    body.notion-mode .modal-header {
+      border-bottom-color: rgba(0, 0, 0, 0.08);
+    }
+
+    .modal-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #f8fafc;
+      letter-spacing: -0.5px;
+    }
+
+    body.notion-mode .modal-title {
+      color: #0f172a;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 28px;
+      cursor: pointer;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .modal-close:hover {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #94a3b8;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    body.notion-mode .empty-state {
+      color: #64748b;
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .app-container {
+        padding: 140px 16px 24px 16px;
+      }
+
+      .kanban-board {
+        grid-template-columns: 1fr !important;
+      }
+
+      .kanban-column {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 1200px) and (min-width: 769px) {
+      .kanban-board {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .quick-form {
+        grid-template-columns: 1fr;
+      }
+
+      .form-field-inline {
+        width: 100%;
+      }
+
+      .add-btn-inline {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .top-actions-bar {
+        padding: 10px 12px;
+        flex-wrap: wrap;
+      }
+
+      .app-logo {
+        font-size: 18px;
+      }
+
+      .month-selector-compact {
+        padding: 4px 8px;
+      }
+
+      .current-month-compact {
+        font-size: 12px;
+        min-width: 100px;
+      }
+
+      .top-right {
+        width: 100%;
+        justify-content: flex-end;
+      }
+
+      .icon-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+
+      .icon-btn span:last-child {
+        display: none;
+      }
+
+      .version-badge {
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+
+      .dashboard-compact {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .deposit-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .deposit-input-group {
+        width: 100%;
+      }
+
+      .deposit-input-group input {
+        width: 100%;
+      }
+
+      .deposit-btn,
+      .use-balance-btn {
+        width: 100%;
+      }
+
+      .tabs-container {
+        gap: 4px;
+      }
+
+      .tab-btn {
+        padding: 10px 12px;
+        font-size: 12px;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="top-actions-bar">
+   <div class="top-left">
+    <div class="app-logo" id="app-title">
+     💰 Contas Pro
+    </div>
+    <div class="month-selector-compact"><button class="month-nav-btn-compact" id="prev-month">◀</button>
+     <div class="current-month-compact" id="current-month">
+      Janeiro 2024
+     </div><button class="month-nav-btn-compact" id="next-month">▶</button>
+    </div>
+   </div>
+   <div class="top-right">
+    <div class="version-badge"><span>🚀</span> <span>v74</span>
+    </div><button class="icon-btn" id="layout-toggle"> <span id="layout-icon">📋</span> <span id="layout-text">Kanban</span> </button> <button class="icon-btn" id="view-mode-toggle"> <span id="view-mode-icon">🌙</span> <span id="view-mode-text">Escuro</span> </button> <button class="icon-btn danger" id="clear-history-btn" style="display: none;"> <span>🗑️</span> <span>Limpar</span> </button> <button class="icon-btn warning" id="recover-btn"> <span>🔄</span> <span>Recuperar</span> <span class="notification-badge" id="deleted-count" style="display: none;">0</span> </button> <button class="icon-btn primary" id="export-btn"> <span>📊</span> <span>Exportar</span> </button>
+   </div>
+  </div>
+  <div id="recover-modal" style="display: none;"></div>
+  <div class="app-container">
+   <div class="content-wrapper"><!-- Resumo Financeiro -->
+    <div class="dashboard-compact" id="dashboard"></div><!-- Saldo e Depósitos -->
+    <div class="deposit-section">
+     <div class="deposit-title" id="daily-amount-label">
+      💰 Gerenciar Saldo
+     </div>
+     <div class="deposit-controls">
+      <div class="deposit-input-group"><label for="daily-value">Valor:</label> <input type="text" id="daily-value" value="R$ 100,00" placeholder="R$ 0,00">
+      </div><button class="deposit-btn" id="add-daily-btn">➕ Adicionar Saldo</button> <button class="use-balance-btn" id="use-balance-btn">💸 Distribuir Saldo</button>
+     </div>
+    </div>
+    <div id="balance-container"></div><!-- Adicionar Nova Conta -->
+    <div class="quick-actions-section">
+     <div class="quick-actions-header" style="cursor: pointer;" id="toggle-form-header">
+      <div class="quick-actions-title">
+       ➕ Adicionar Nova Conta
+      </div><button type="button" class="icon-btn" id="toggle-form-btn" style="margin: 0;"> <span id="toggle-icon">▼</span> </button>
+     </div>
+     <form class="quick-form" id="quick-add-form" style="display: none;">
+      <div class="form-field-inline"><label for="quick-icon">Categoria</label> <select id="quick-icon" required> <option value="">Selecione...</option> <option value="💡">💡 Luz</option> <option value="💧">💧 Água</option> <option value="📱">📱 Internet/Celular</option> <option value="🏠">🏠 Aluguel</option> <option value="🚗">🚗 Transporte</option> <option value="🍔">🍔 Alimentação</option> <option value="💳">💳 Cartão de Crédito</option> <option value="🏥">🏥 Saúde</option> <option value="📚">📚 Educação</option> <option value="🎮">🎮 Lazer</option> <option value="💰">💰 Outro</option> </select>
+      </div>
+      <div class="form-field-inline"><label for="quick-name">Nome da Conta</label> <input type="text" id="quick-name" placeholder="Ex: Conta de Luz..." required>
+      </div>
+      <div class="form-field-inline"><label for="quick-target">Valor (R$)</label> <input type="number" id="quick-target" placeholder="150.00" min="0" step="0.01" required>
+      </div>
+      <div class="form-field-inline"><label for="quick-due-date">Vencimento</label> <input type="date" id="quick-due-date" required>
+      </div>
+      <div class="form-field-inline"><label for="quick-installments">Parcelas</label> <input type="number" id="quick-installments" placeholder="1" min="1" max="999" value="1">
+      </div><button type="submit" class="add-btn-inline">✅ Adicionar</button>
+     </form>
+    </div><!-- Tabs de Navegação -->
+    <div class="tabs-container"><button class="tab-btn active" data-tab="kanban">📋 Quadro Kanban</button> <button class="tab-btn" data-tab="graficos">📊 Gráficos</button>
+    </div><!-- Tab Content: Kanban Board -->
+    <div class="tab-content active" id="tab-kanban">
+     <div class="kanban-board" id="kanban-board" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="kanban-column" data-status="pending" id="column-pending">
+       <div class="kanban-column-header">
+        <div class="kanban-column-title"><span>🔴</span> <span>A Pagar</span>
+        </div>
+        <div class="kanban-column-count" id="count-pending">
+         0
+        </div>
+       </div>
+       <div class="kanban-cards" id="cards-pending"></div>
+      </div>
+      <div class="kanban-column" data-status="in-progress" id="column-in-progress">
+       <div class="kanban-column-header">
+        <div class="kanban-column-title"><span>🟡</span> <span>Em Progresso</span>
+        </div>
+        <div class="kanban-column-count" id="count-in-progress">
+         0
+        </div>
+       </div>
+       <div class="kanban-cards" id="cards-in-progress"></div>
+      </div>
+      <div class="kanban-column" data-status="almost-there" id="column-almost-there">
+       <div class="kanban-column-header">
+        <div class="kanban-column-title"><span>🟠</span> <span>Quase Lá</span>
+        </div>
+        <div class="kanban-column-count" id="count-almost-there">
+         0
+        </div>
+       </div>
+       <div class="kanban-cards" id="cards-almost-there"></div>
+      </div>
+      <div class="kanban-column" data-status="completed" id="column-completed">
+       <div class="kanban-column-header">
+        <div class="kanban-column-title"><span>🟢</span> <span>Pagas</span>
+        </div>
+        <div class="kanban-column-count" id="count-completed">
+         0
+        </div>
+       </div>
+       <div class="kanban-cards" id="cards-completed"></div>
+      </div>
+     </div>
+    </div><!-- Tab Content: Gráficos -->
+    <div class="tab-content" id="tab-graficos">
+     <div class="quick-actions-section" style="margin-bottom: 20px;">
+      <div class="quick-actions-header">
+       <div class="quick-actions-title">
+        📈 Gráfico de Progresso do Mês
+       </div>
+      </div>
+      <canvas id="progressChart"></canvas>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    let currentData = [];
+    let isProcessing = false;
+    let currentMonth = new Date();
+    let progressChart = null;
+    let deletedItems = [];
+    let draggedCard = null;
+    let currentLayout = 'kanban';
+
+    const defaultConfig = {
+      app_title: "💰 Contas Pro",
+      daily_amount_label: "💰 Gerenciar Saldo",
+      budget_label: "Orçamento Mensal",
+      background_color: "#0f172a",
+      card_color: "#1e293b",
+      text_color: "#f8fafc",
+      primary_action_color: "#06b6d4",
+      progress_color: "#8b5cf6",
+      font_family: "Inter",
+      font_size: 16
+    };
+
+    async function onConfigChange(config) {
+      const titleElement = document.getElementById('app-title');
+      const dailyLabelElement = document.getElementById('daily-amount-label');
+
+      if (titleElement) titleElement.textContent = config.app_title || defaultConfig.app_title;
+      if (dailyLabelElement) dailyLabelElement.textContent = config.daily_amount_label || defaultConfig.daily_amount_label;
+
+      const fontFamily = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+
+      document.body.style.fontFamily = `${fontFamily}, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`;
+      document.body.style.fontSize = `${fontSize}px`;
+    }
+
+    const dataHandler = {
+      onDataChanged(data) {
+        currentData = data;
+        const monthKey = getMonthKey(currentMonth);
+        const filteredData = data.filter(item => item.monthYear === monthKey);
+        renderDashboard(filteredData);
+        renderChart(filteredData);
+        renderBalanceCard(filteredData);
+        renderKanbanBoard(filteredData);
+      }
+    };
+
+    function getMonthKey(date) {
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${year}-${month}`;
+    }
+
+    function getMonthName(date) {
+      const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
+                      'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+      return `${months[date.getMonth()]} ${date.getFullYear()}`;
+    }
+
+    function getMonthNameShort(date) {
+      const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 
+                      'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+      return `${months[date.getMonth()]}/${date.getFullYear()}`;
+    }
+
+    function updateMonthDisplay() {
+      document.getElementById('current-month').textContent = getMonthNameShort(currentMonth);
+      const monthKey = getMonthKey(currentMonth);
+      const filteredData = currentData.filter(item => item.monthYear === monthKey);
+      renderDashboard(filteredData);
+      renderChart(filteredData);
+      renderBalanceCard(filteredData);
+      renderKanbanBoard(filteredData);
+      updateDeletedCount();
+    }
+
+    function updateDeletedCount() {
+      const badge = document.getElementById('deleted-count');
+      const clearBtn = document.getElementById('clear-history-btn');
+      
+      if (deletedItems.length > 0) {
+        badge.textContent = deletedItems.length;
+        badge.style.display = 'flex';
+        clearBtn.style.display = 'flex';
+      } else {
+        badge.style.display = 'none';
+        clearBtn.style.display = 'none';
+      }
+    }
+
+    function getKanbanStatus(account) {
+      const percentage = (account.saved / account.target) * 100;
+      
+      if (percentage >= 100) {
+        return 'completed';
+      } else if (percentage >= 75) {
+        return 'almost-there';
+      } else if (percentage >= 25) {
+        return 'in-progress';
+      } else {
+        return 'pending';
+      }
+    }
+
+    function renderKanbanBoard(data) {
+      const regularAccounts = data.filter(cat => !cat.isBalanceAccount);
+      const board = document.getElementById('kanban-board');
+
+      if (currentLayout === 'notion') {
+        renderNotionView(regularAccounts);
+        return;
+      }
+
+      board.className = 'kanban-board';
+      if (currentLayout === 'trello') {
+        board.classList.add('trello-layout');
+      }
+
+      board.style.gridTemplateColumns = currentLayout === 'kanban' ? 'repeat(4, 1fr)' : '';
+      
+      ['pending', 'in-progress', 'almost-there', 'completed'].forEach(status => {
+        const column = document.getElementById(`column-${status}`);
+        if (column) column.style.display = 'block';
+        
+        const cardsContainer = document.getElementById(`cards-${status}`);
+        if (cardsContainer) cardsContainer.innerHTML = '';
+      });
+
+      if (regularAccounts.length === 0) {
+        ['pending', 'in-progress', 'almost-there', 'completed'].forEach(status => {
+          const cardsContainer = document.getElementById(`cards-${status}`);
+          if (cardsContainer) {
+            cardsContainer.innerHTML = `
+              <div class="empty-state">
+                <span class="empty-state-icon">📭</span>
+                <div>Nenhuma conta nesta coluna</div>
+              </div>
+            `;
+          }
+        });
+        
+        ['pending', 'in-progress', 'almost-there', 'completed'].forEach(status => {
+          const countEl = document.getElementById(`count-${status}`);
+          if (countEl) countEl.textContent = '0';
+        });
+        return;
+      }
+
+      const accountsByStatus = {
+        'pending': [],
+        'in-progress': [],
+        'almost-there': [],
+        'completed': []
+      };
+
+      regularAccounts.forEach(account => {
+        const status = getKanbanStatus(account);
+        accountsByStatus[status].push(account);
+      });
+
+      Object.keys(accountsByStatus).forEach(status => {
+        const accounts = accountsByStatus[status];
+        const cardsContainer = document.getElementById(`cards-${status}`);
+        const countElement = document.getElementById(`count-${status}`);
+        
+        if (!cardsContainer || !countElement) return;
+        
+        countElement.textContent = accounts.length;
+
+        if (accounts.length === 0) {
+          cardsContainer.innerHTML = `
+            <div class="empty-state">
+              <span class="empty-state-icon">📭</span>
+              <div>Nenhuma conta nesta coluna</div>
+            </div>
+          `;
+          return;
+        }
+
+        accounts.forEach(account => {
+          const card = createKanbanCard(account);
+          cardsContainer.appendChild(card);
+        });
+      });
+    }
+
+    function renderNotionView(accounts) {
+      const board = document.getElementById('kanban-board');
+      
+      ['pending', 'in-progress', 'almost-there', 'completed'].forEach(status => {
+        const column = document.getElementById(`column-${status}`);
+        if (column) column.style.display = 'none';
+      });
+
+      if (accounts.length === 0) {
+        board.innerHTML = `
+          <div class="notion-table">
+            <div class="empty-state">
+              <span class="empty-state-icon">📭</span>
+              <div>Nenhuma conta cadastrada neste mês</div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const sortedAccounts = [...accounts].sort((a, b) => {
+        const dateA = new Date(a.dueDate || '9999-12-31');
+        const dateB = new Date(b.dueDate || '9999-12-31');
+        return dateA - dateB;
+      });
+
+      let tableHTML = `
+        <div class="notion-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Conta</th>
+                <th>Valor</th>
+                <th>Progresso</th>
+                <th>Status</th>
+                <th>Vencimento</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      sortedAccounts.forEach(account => {
+        const percentage = Math.min((account.saved / account.target) * 100, 100);
+        const status = getKanbanStatus(account);
+        const statusLabels = {
+          'pending': '🔴 A Pagar',
+          'in-progress': '🟡 Em Progresso',
+          'almost-there': '🟠 Quase Lá',
+          'completed': '🟢 Paga'
+        };
+
+        const daysRemaining = getDaysRemaining(account.dueDate);
+        let daysText = formatDate(account.dueDate);
+        if (daysRemaining !== null) {
+          if (daysRemaining < 0) {
+            daysText += ` (${Math.abs(daysRemaining)}d atrasado)`;
+          } else if (daysRemaining === 0) {
+            daysText += ' (Hoje!)';
+          } else if (daysRemaining <= 3) {
+            daysText += ` (${daysRemaining}d)`;
+          }
+        }
+
+        tableHTML += `
+          <tr data-account-id="${account.__backendId}">
+            <td>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 20px;">${account.icon || '💰'}</span>
+                <span style="font-weight: 600;">${account.category}</span>
+              </div>
+            </td>
+            <td style="font-weight: 700;">${formatCurrency(account.target)}</td>
+            <td>
+              <div class="notion-progress-mini">
+                <div class="notion-progress-bar-mini">
+                  <div class="notion-progress-fill" style="width: ${percentage}%"></div>
+                </div>
+                <span style="font-size: 12px; font-weight: 700; white-space: nowrap;">${percentage.toFixed(0)}%</span>
+              </div>
+            </td>
+            <td>
+              <span class="notion-status ${status}">${statusLabels[status]}</span>
+            </td>
+            <td style="white-space: nowrap; font-size: 13px;">${daysText}</td>
+            <td>
+              <div class="notion-actions">
+                ${account.totalInstallments && account.totalInstallments > 1 ? `
+                  <button class="notion-btn-small delete" data-account-id="${account.__backendId}">🗑️</button>
+                  <button class="notion-btn-small delete" data-account-id="${account.__backendId}" data-delete-all="true">🗑️ Todas</button>
+                ` : `
+                  <button class="notion-btn-small delete" data-account-id="${account.__backendId}">🗑️ Excluir</button>
+                `}
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+
+      tableHTML += `
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      board.innerHTML = tableHTML;
+
+      const deleteButtons = board.querySelectorAll('.delete');
+      deleteButtons.forEach(deleteBtn => {
+        deleteBtn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const accountId = deleteBtn.dataset.accountId;
+          const account = currentData.find(a => a.__backendId === accountId);
+          if (!account) return;
+
+          const deleteAll = deleteBtn.dataset.deleteAll === 'true';
+          if (deleteAll) {
+            await handleDeleteAllInstallments(account);
+          } else {
+            const originalText = deleteBtn.innerHTML;
+            deleteBtn.innerHTML = '✅';
+            deleteBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+
+            setTimeout(() => {
+              if (deleteBtn.innerHTML === '✅') {
+                deleteBtn.innerHTML = originalText;
+                deleteBtn.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+              }
+            }, 3000);
+
+            deleteBtn.onclick = async () => {
+              deleteBtn.innerHTML = '⏳';
+              deleteBtn.disabled = true;
+
+              deletedItems.push({
+                ...account,
+                deletedAt: new Date().toISOString()
+              });
+              updateDeletedCount();
+              
+              const result = await window.dataSdk.delete(account);
+              if (!result.isOk) {
+                deletedItems = deletedItems.filter(item => item.__backendId !== account.__backendId);
+                updateDeletedCount();
+                showMessage('Erro ao remover conta. Tente novamente.');
+              } else {
+                showSuccessMessage('✅ Conta removida com sucesso!');
+              }
+
+              deleteBtn.disabled = false;
+              deleteBtn.onclick = null;
+            };
+          }
+        });
+      });
+    }
+
+    function createKanbanCard(account) {
+      const card = document.createElement('div');
+      card.className = 'kanban-card';
+      card.draggable = true;
+      card.dataset.accountId = account.__backendId;
+
+      const percentage = Math.min((account.saved / account.target) * 100, 100);
+      const remaining = Math.max(account.target - account.saved, 0);
+      const isCompleted = account.saved >= account.target;
+      const daysRemaining = getDaysRemaining(account.dueDate);
+      const isOverdue = daysRemaining !== null && daysRemaining < 0 && !isCompleted;
+
+      if (isCompleted) card.classList.add('completed');
+      if (isOverdue) card.classList.add('overdue');
+
+      let daysText = '';
+      if (daysRemaining !== null) {
+        if (daysRemaining < 0) {
+          daysText = `🔥 ${Math.abs(daysRemaining)} dias atrasado`;
+        } else if (daysRemaining === 0) {
+          daysText = '🔥 Vence hoje!';
+        } else if (daysRemaining === 1) {
+          daysText = '⏰ Vence amanhã';
+        } else {
+          daysText = `📅 ${daysRemaining} dias`;
+        }
+      }
+
+      card.innerHTML = `
+        <div class="kanban-card-header">
+          <div class="kanban-card-title-section">
+            <div class="kanban-card-icon">${account.icon || '💰'}</div>
+            <div class="kanban-card-title">${account.category}</div>
+          </div>
+          <div class="kanban-card-target">${formatCurrency(account.target)}</div>
+        </div>
+        
+        ${account.dueDate ? `
+          <div class="kanban-card-due ${isOverdue ? 'overdue' : ''}">
+            <span>📆 ${formatDate(account.dueDate)}</span>
+            <span>${daysText}</span>
+          </div>
+        ` : ''}
+
+        <div class="kanban-card-progress">
+          <div class="progress-bar-container">
+            <div class="progress-bar ${isCompleted ? 'completed' : ''}" style="width: ${percentage}%">
+              ${percentage.toFixed(0)}%
+            </div>
+          </div>
+        </div>
+
+        <div class="kanban-card-stats">
+          <div class="kanban-stat">
+            <div class="kanban-stat-label">Economizado</div>
+            <div class="kanban-stat-value">${formatCurrency(account.saved)}</div>
+          </div>
+          <div class="kanban-stat">
+            <div class="kanban-stat-label">Faltando</div>
+            <div class="kanban-stat-value">${formatCurrency(remaining)}</div>
+          </div>
+        </div>
+
+        <div class="kanban-card-actions">
+          ${account.totalInstallments && account.totalInstallments > 1 ? `
+            <button class="kanban-card-btn delete" data-account-id="${account.__backendId}">🗑️ Excluir</button>
+            <button class="kanban-card-btn delete" data-account-id="${account.__backendId}" data-delete-all="true">🗑️ Todas (${account.totalInstallments}x)</button>
+          ` : `
+            <button class="kanban-card-btn delete" data-account-id="${account.__backendId}">🗑️ Excluir</button>
+          `}
+        </div>
+      `;
+
+      card.addEventListener('dragstart', handleDragStart);
+      card.addEventListener('dragend', handleDragEnd);
+
+      const deleteButtons = card.querySelectorAll('.delete');
+      deleteButtons.forEach(deleteBtn => {
+        deleteBtn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const deleteAll = deleteBtn.dataset.deleteAll === 'true';
+          if (deleteAll) {
+            await handleDeleteAllInstallments(account);
+          } else {
+            await handleDelete(account.__backendId);
+          }
+        });
+      });
+
+      return card;
+    }
+
+    function handleDragStart(e) {
+      draggedCard = this;
+      this.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/html', this.innerHTML);
+    }
+
+    function handleDragEnd(e) {
+      this.classList.remove('dragging');
+      
+      document.querySelectorAll('.kanban-column').forEach(col => {
+        col.classList.remove('drag-over');
+      });
+    }
+
+    function handleDragOver(e) {
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
+      e.dataTransfer.dropEffect = 'move';
+      return false;
+    }
+
+    function handleDragEnter(e) {
+      this.classList.add('drag-over');
+    }
+
+    function handleDragLeave(e) {
+      this.classList.remove('drag-over');
+    }
+
+    async function handleDrop(e) {
+      if (e.stopPropagation) {
+        e.stopPropagation();
+      }
+
+      this.classList.remove('drag-over');
+
+      const column = e.currentTarget;
+
+      if (draggedCard && column) {
+        const newStatus = column.dataset.status;
+        const accountId = draggedCard.dataset.accountId;
+        const account = currentData.find(a => a.__backendId === accountId);
+
+        if (account) {
+          let newSaved = account.saved;
+          
+          if (newStatus === 'completed') {
+            newSaved = account.target;
+          } else if (newStatus === 'almost-there') {
+            newSaved = account.target * 0.85;
+          } else if (newStatus === 'in-progress') {
+            newSaved = account.target * 0.50;
+          } else if (newStatus === 'pending') {
+            newSaved = account.target * 0.10;
+          }
+
+          const updatedAccount = {
+            ...account,
+            saved: newSaved,
+            kanbanStatus: newStatus,
+            lastUpdated: new Date().toISOString()
+          };
+
+          const result = await window.dataSdk.update(updatedAccount);
+          if (!result.isOk) {
+            showMessage('Erro ao mover cartão. Tente novamente.');
+          } else {
+            showSuccessMessage('✅ Status atualizado com sucesso!');
+          }
+        }
+      }
+
+      return false;
+    }
+
+    function setupDragAndDrop() {
+      document.querySelectorAll('.kanban-column').forEach(column => {
+        column.addEventListener('dragover', handleDragOver);
+        column.addEventListener('dragenter', handleDragEnter);
+        column.addEventListener('dragleave', handleDragLeave);
+        column.addEventListener('drop', handleDrop);
+      });
+    }
+
+    async function getOrCreateBalanceAccount() {
+      const monthKey = getMonthKey(currentMonth);
+      let balanceAccount = currentData.find(item => 
+        item.monthYear === monthKey && item.isBalanceAccount === true
+      );
+
+      if (!balanceAccount) {
+        const newBalance = {
+          id: `balance-${Date.now()}-${Math.random()}`,
+          category: "Saldo Disponível",
+          icon: "💵",
+          target: 999999999,
+          saved: 0,
+          dueDate: "",
+          monthYear: monthKey,
+          completed: false,
+          isBalanceAccount: true,
+          kanbanStatus: "",
+          lastUpdated: new Date().toISOString()
+        };
+
+        const result = await window.dataSdk.create(newBalance);
+        if (result.isOk) {
+          await new Promise(resolve => setTimeout(resolve, 200));
+          return currentData.find(item => 
+            item.monthYear === monthKey && item.isBalanceAccount === true
+          );
+        }
+        return null;
+      }
+
+      return balanceAccount;
+    }
+
+    function renderDashboard(data) {
+      const dashboard = document.getElementById('dashboard');
+      
+      const balanceAccount = data.find(cat => cat.isBalanceAccount === true);
+      const regularAccounts = data.filter(cat => !cat.isBalanceAccount);
+      
+      const totalTarget = regularAccounts.reduce((sum, cat) => sum + cat.target, 0);
+      const totalSaved = regularAccounts.reduce((sum, cat) => sum + cat.saved, 0);
+      const totalRemaining = Math.max(totalTarget - totalSaved, 0);
+      const completedCount = regularAccounts.filter(cat => cat.saved >= cat.target).length;
+      const totalCount = regularAccounts.length;
+      const overdueCount = regularAccounts.filter(cat => {
+        const days = getDaysRemaining(cat.dueDate);
+        return days !== null && days < 0 && cat.saved < cat.target;
+      }).length;
+
+      const balanceAmount = balanceAccount ? balanceAccount.saved : 0;
+
+      dashboard.innerHTML = `
+        <div class="stat-card-compact">
+          <div class="stat-card-compact-header">
+            <div class="stat-card-compact-icon">💵</div>
+            <div class="stat-card-compact-title">Saldo Disponível</div>
+          </div>
+          <div class="stat-card-compact-value">${formatCurrency(balanceAmount)}</div>
+        </div>
+
+        <div class="stat-card-compact">
+          <div class="stat-card-compact-header">
+            <div class="stat-card-compact-icon">💰</div>
+            <div class="stat-card-compact-title">Economizado</div>
+          </div>
+          <div class="stat-card-compact-value">${formatCurrency(totalSaved)}</div>
+        </div>
+
+        <div class="stat-card-compact">
+          <div class="stat-card-compact-header">
+            <div class="stat-card-compact-icon">🎯</div>
+            <div class="stat-card-compact-title">Faltando</div>
+          </div>
+          <div class="stat-card-compact-value">${formatCurrency(totalRemaining)}</div>
+        </div>
+
+        <div class="stat-card-compact">
+          <div class="stat-card-compact-header">
+            <div class="stat-card-compact-icon">✅</div>
+            <div class="stat-card-compact-title">Completas</div>
+          </div>
+          <div class="stat-card-compact-value">${completedCount}/${totalCount}</div>
+        </div>
+
+        <div class="stat-card-compact" style="position: relative;">
+          <div class="stat-card-compact-header">
+            <div class="stat-card-compact-icon">⏰</div>
+            <div class="stat-card-compact-title">Atrasadas</div>
+            ${overdueCount > 0 ? '<div class="notification-badge" style="position: static; width: 16px; height: 16px; font-size: 9px; margin-left: auto;">' + overdueCount + '</div>' : ''}
+          </div>
+          <div class="stat-card-compact-value">${overdueCount}</div>
+        </div>
+      `;
+    }
+
+    function renderBalanceCard(data) {
+      const container = document.getElementById('balance-container');
+      const balanceAccount = data.find(cat => cat.isBalanceAccount === true);
+
+      if (!balanceAccount || balanceAccount.saved === 0) {
+        container.innerHTML = '';
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="balance-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 28px;">${balanceAccount.icon || '💵'}</span>
+              <span style="font-size: 18px; font-weight: 800; color: #fef3c7;">${balanceAccount.category}</span>
+            </div>
+            <button id="delete-balance-btn" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #ffffff; border: none; border-radius: 12px; padding: 12px 20px; font-size: 24px; font-weight: 800; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5); display: flex; align-items: center; gap: 8px;">
+              🗑️
+            </button>
+          </div>
+          <div style="text-align: center; margin: 20px 0;">
+            <div style="font-size: 14px; color: #fef3c7; margin-bottom: 8px; font-weight: 600;">Saldo Atual</div>
+            <div style="font-size: 36px; font-weight: 900; color: #fef3c7;">${formatCurrency(balanceAccount.saved)}</div>
+          </div>
+          <div style="margin-top: 16px; text-align: center; color: #fef3c7; font-size: 12px; font-weight: 600;">
+            💡 Use o botão "Distribuir Saldo" para alocar automaticamente
+          </div>
+        </div>
+      `;
+
+      const deleteBtn = document.getElementById('delete-balance-btn');
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', async () => {
+          const originalHTML = deleteBtn.innerHTML;
+          deleteBtn.innerHTML = '⚠️';
+          deleteBtn.style.background = 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)';
+          deleteBtn.style.fontSize = '28px';
+
+          setTimeout(() => {
+            if (deleteBtn.innerHTML === '⚠️') {
+              deleteBtn.innerHTML = originalHTML;
+              deleteBtn.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+              deleteBtn.style.fontSize = '24px';
+            }
+          }, 3000);
+
+          deleteBtn.onclick = async () => {
+            deleteBtn.innerHTML = '⏳';
+            deleteBtn.disabled = true;
+            deleteBtn.style.fontSize = '24px';
+
+            balanceAccount.saved = 0;
+            const result = await window.dataSdk.update({
+              ...balanceAccount,
+              lastUpdated: new Date().toISOString()
+            });
+
+            if (result.isOk) {
+              showSuccessMessage('✅ Saldo excluído com sucesso!');
+            } else {
+              showMessage('Erro ao excluir saldo. Tente novamente.');
+            }
+
+            deleteBtn.disabled = false;
+            deleteBtn.innerHTML = originalHTML;
+            deleteBtn.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+            deleteBtn.style.fontSize = '24px';
+            deleteBtn.onclick = null;
+          };
+        });
+      }
+    }
+
+    function renderChart(data) {
+      const ctx = document.getElementById('progressChart');
+      
+      if (progressChart) {
+        progressChart.destroy();
+      }
+
+      const regularAccounts = data.filter(cat => !cat.isBalanceAccount);
+
+      if (regularAccounts.length === 0) {
+        ctx.parentElement.parentElement.style.display = 'none';
+        return;
+      }
+
+      ctx.parentElement.parentElement.style.display = 'block';
+
+      const isNotionMode = document.body.classList.contains('notion-mode');
+      const textColor = isNotionMode ? '#37352f' : '#f8fafc';
+      const gridColor = isNotionMode ? 'rgba(0, 0, 0, 0.1)' : 'rgba(139, 92, 246, 0.1)';
+
+      const labels = regularAccounts.map(cat => cat.category);
+      const savedData = regularAccounts.map(cat => cat.saved);
+      const targetData = regularAccounts.map(cat => cat.target);
+
+      progressChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Economizado',
+              data: savedData,
+              backgroundColor: isNotionMode ? 'rgba(35, 131, 226, 0.8)' : 'rgba(6, 182, 212, 0.8)',
+              borderColor: isNotionMode ? '#2383e2' : '#06b6d4',
+              borderWidth: 2,
+              borderRadius: 8
+            },
+            {
+              label: 'Meta',
+              data: targetData,
+              backgroundColor: isNotionMode ? 'rgba(0, 0, 0, 0.1)' : 'rgba(139, 92, 246, 0.3)',
+              borderColor: isNotionMode ? 'rgba(0, 0, 0, 0.2)' : '#8b5cf6',
+              borderWidth: 2,
+              borderRadius: 8
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          aspectRatio: 2,
+          plugins: {
+            legend: {
+              labels: {
+                color: textColor,
+                font: { size: 13, weight: '600' }
+              }
+            },
+            tooltip: {
+              backgroundColor: isNotionMode ? '#ffffff' : '#1e293b',
+              titleColor: textColor,
+              bodyColor: textColor,
+              borderColor: isNotionMode ? 'rgba(0, 0, 0, 0.1)' : '#8b5cf6',
+              borderWidth: 1,
+              padding: 12,
+              displayColors: true,
+              callbacks: {
+                label: function(context) {
+                  return context.dataset.label + ': R$ ' + context.parsed.y.toFixed(2);
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                color: textColor,
+                callback: function(value) {
+                  return 'R$ ' + value;
+                }
+              },
+              grid: {
+                color: gridColor
+              }
+            },
+            x: {
+              ticks: {
+                color: textColor
+              },
+              grid: {
+                color: gridColor
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return 'Sem data';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('pt-BR');
+    }
+
+    function getDaysRemaining(dateString) {
+      if (!dateString) return null;
+      const dueDate = new Date(dateString);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      dueDate.setHours(0, 0, 0, 0);
+      const diffTime = dueDate - today;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays;
+    }
+
+    async function handleDelete(categoryId) {
+      const category = currentData.find(c => c.__backendId === categoryId);
+      if (!category) {
+        showMessage('Erro: Conta não encontrada.');
+        return;
+      }
+
+      const card = document.querySelector(`[data-account-id="${categoryId}"]`);
+      if (!card) return;
+
+      const actionsDiv = card.querySelector('.kanban-card-actions');
+      const originalHTML = actionsDiv.innerHTML;
+
+      actionsDiv.innerHTML = `
+        <button class="kanban-card-btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);" id="confirm-delete-${categoryId}">✅ Confirmar</button>
+        <button class="kanban-card-btn" style="background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);" id="cancel-delete-${categoryId}">❌ Cancelar</button>
+      `;
+
+      document.getElementById(`confirm-delete-${categoryId}`).addEventListener('click', async (e) => {
+        e.stopPropagation();
+        
+        actionsDiv.innerHTML = '<div style="text-align: center; padding: 10px; color: #94a3b8;">Excluindo...</div>';
+
+        deletedItems.push({
+          ...category,
+          deletedAt: new Date().toISOString()
+        });
+        updateDeletedCount();
+        
+        const result = await window.dataSdk.delete(category);
+        if (!result.isOk) {
+          deletedItems = deletedItems.filter(item => item.__backendId !== category.__backendId);
+          updateDeletedCount();
+          showMessage('Erro ao remover conta. Tente novamente.');
+          actionsDiv.innerHTML = originalHTML;
+        } else {
+          showSuccessMessage('✅ Conta removida com sucesso!');
+        }
+      });
+
+      document.getElementById(`cancel-delete-${categoryId}`).addEventListener('click', (e) => {
+        e.stopPropagation();
+        actionsDiv.innerHTML = originalHTML;
+        
+        const deleteButtons = actionsDiv.querySelectorAll('.delete');
+        deleteButtons.forEach(deleteBtn => {
+          deleteBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const deleteAll = deleteBtn.dataset.deleteAll === 'true';
+            if (deleteAll) {
+              await handleDeleteAllInstallments(category);
+            } else {
+              await handleDelete(category.__backendId);
+            }
+          });
+        });
+      });
+    }
+
+    async function handleDeleteAllInstallments(account) {
+      if (!account.totalInstallments || account.totalInstallments <= 1) {
+        await handleDelete(account.__backendId);
+        return;
+      }
+
+      const categoryBase = account.category.replace(/\s*\(\d+\/\d+\)$/, '');
+      const allInstallments = currentData.filter(c => {
+        const cBase = c.category.replace(/\s*\(\d+\/\d+\)$/, '');
+        return cBase === categoryBase && 
+               c.totalInstallments === account.totalInstallments &&
+               c.icon === account.icon;
+      });
+
+      if (allInstallments.length === 0) {
+        showMessage('Nenhuma parcela encontrada.');
+        return;
+      }
+
+      const card = document.querySelector(`[data-account-id="${account.__backendId}"]`);
+      if (!card) return;
+
+      const actionsDiv = card.querySelector('.kanban-card-actions');
+      const originalHTML = actionsDiv.innerHTML;
+
+      actionsDiv.innerHTML = `
+        <div style="margin-bottom: 10px; text-align: center; color: #fbbf24; font-weight: 700; font-size: 12px;">
+          Excluir ${allInstallments.length} parcelas?
+        </div>
+        <button class="kanban-card-btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);" id="confirm-delete-all-${account.__backendId}">✅ Confirmar</button>
+        <button class="kanban-card-btn" style="background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);" id="cancel-delete-all-${account.__backendId}">❌ Cancelar</button>
+      `;
+
+      document.getElementById(`confirm-delete-all-${account.__backendId}`).addEventListener('click', async (e) => {
+        e.stopPropagation();
+        
+        actionsDiv.innerHTML = '<div style="text-align: center; padding: 10px; color: #94a3b8;">Excluindo todas...</div>';
+
+        let successCount = 0;
+        for (const installment of allInstallments) {
+          deletedItems.push({
+            ...installment,
+            deletedAt: new Date().toISOString()
+          });
+          
+          const result = await window.dataSdk.delete(installment);
+          if (result.isOk) {
+            successCount++;
+          } else {
+            deletedItems = deletedItems.filter(item => item.__backendId !== installment.__backendId);
+          }
+        }
+        
+        updateDeletedCount();
+        
+        if (successCount === allInstallments.length) {
+          showSuccessMessage(`✅ ${successCount} parcelas removidas com sucesso!`);
+        } else if (successCount > 0) {
+          showMessage(`⚠️ ${successCount} de ${allInstallments.length} parcelas removidas. Algumas falharam.`);
+        } else {
+          showMessage('Erro ao remover parcelas. Tente novamente.');
+        }
+      });
+
+      document.getElementById(`cancel-delete-all-${account.__backendId}`).addEventListener('click', (e) => {
+        e.stopPropagation();
+        actionsDiv.innerHTML = originalHTML;
+        
+        const deleteButtons = actionsDiv.querySelectorAll('.delete');
+        deleteButtons.forEach(deleteBtn => {
+          deleteBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const deleteAll = deleteBtn.dataset.deleteAll === 'true';
+            if (deleteAll) {
+              await handleDeleteAllInstallments(account);
+            } else {
+              await handleDelete(account.__backendId);
+            }
+          });
+        });
+      });
+    }
+
+    function formatCurrency(value) {
+      const numValue = typeof value === 'number' ? value : parseFloat(value);
+      return numValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function parseCurrency(value) {
+      if (typeof value === 'number') return value;
+      const cleanValue = value.replace(/[^\d,]/g, '').replace(',', '.');
+      return parseFloat(cleanValue) || 0;
+    }
+
+    function formatCurrencyInput(input) {
+      let value = input.value.replace(/[^\d]/g, '');
+      if (value === '') {
+        input.value = '';
+        return;
+      }
+      
+      const numValue = parseFloat(value) / 100;
+      input.value = formatCurrency(numValue);
+    }
+
+    async function addDailyDeposit() {
+      if (isProcessing) return;
+
+      const dailyValue = parseCurrency(document.getElementById('daily-value').value);
+      
+      if (isNaN(dailyValue) || dailyValue <= 0) {
+        showMessage('Por favor, insira um valor válido maior que zero.');
+        return;
+      }
+
+      const monthKey = getMonthKey(currentMonth);
+      const monthData = currentData.filter(item => item.monthYear === monthKey);
+
+      if (monthData.length === 0) {
+        showMessage('Adicione pelo menos uma conta para este mês antes de fazer depósitos.');
+        return;
+      }
+      
+      const button = document.getElementById('add-daily-btn');
+      const originalText = button.innerHTML;
+      button.disabled = true;
+      button.innerHTML = '<span>Processando...</span><div class="spinner"></div>';
+      isProcessing = true;
+
+      await getOrCreateBalanceAccount();
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      const updatedMonthData = currentData.filter(item => item.monthYear === monthKey);
+      const balanceAccount = updatedMonthData.find(cat => cat.isBalanceAccount === true);
+
+      if (balanceAccount) {
+        balanceAccount.saved += dailyValue;
+        const result = await window.dataSdk.update({
+          ...balanceAccount,
+          lastUpdated: new Date().toISOString()
+        });
+
+        if (result.isOk) {
+          showSuccessMessage(`✅ ${formatCurrency(dailyValue)} adicionado ao saldo! Total: ${formatCurrency(balanceAccount.saved)}`);
+        } else {
+          showMessage('Erro ao adicionar saldo. Tente novamente.');
+        }
+      }
+
+      button.disabled = false;
+      button.innerHTML = originalText;
+      isProcessing = false;
+    }
+
+    async function useBalanceToDistribute() {
+      if (isProcessing) return;
+
+      const monthKey = getMonthKey(currentMonth);
+      const monthData = currentData.filter(item => item.monthYear === monthKey);
+      const balanceAccount = monthData.find(cat => cat.isBalanceAccount === true);
+
+      if (!balanceAccount || balanceAccount.saved <= 0) {
+        showMessage('Não há saldo disponível para distribuir.');
+        return;
+      }
+
+      const button = document.getElementById('use-balance-btn');
+      const originalText = button.innerHTML;
+      button.disabled = true;
+      button.innerHTML = '<span>Distribuindo...</span><div class="spinner"></div>';
+      isProcessing = true;
+
+      const regularAccounts = monthData.filter(cat => !cat.isBalanceAccount);
+      
+      if (regularAccounts.length === 0) {
+        button.disabled = false;
+        button.innerHTML = originalText;
+        isProcessing = false;
+        showMessage('Não há contas cadastradas em ' + getMonthName(currentMonth) + '.');
+        return;
+      }
+
+      const categoriesNeedingMoney = regularAccounts.filter(cat => cat.saved < cat.target);
+
+      if (categoriesNeedingMoney.length === 0) {
+        button.disabled = false;
+        button.innerHTML = originalText;
+        isProcessing = false;
+        showMessage('✅ Todas as contas de ' + getMonthName(currentMonth) + ' já estão pagas!');
+        return;
+      }
+
+      let remainingValue = balanceAccount.saved;
+      balanceAccount.saved = 0;
+
+      while (remainingValue > 0.01 && categoriesNeedingMoney.length > 0) {
+        const amountPerCategory = remainingValue / categoriesNeedingMoney.length;
+        let surplus = 0;
+
+        for (let i = categoriesNeedingMoney.length - 1; i >= 0; i--) {
+          const category = categoriesNeedingMoney[i];
+          const remaining = category.target - category.saved;
+          
+          if (amountPerCategory >= remaining) {
+            category.saved = category.target;
+            surplus += (amountPerCategory - remaining);
+            categoriesNeedingMoney.splice(i, 1);
+          } else {
+            category.saved += amountPerCategory;
+          }
+        }
+
+        remainingValue = surplus;
+      }
+
+      balanceAccount.saved = remainingValue;
+
+      const allAccountsToUpdate = [...regularAccounts, balanceAccount];
+      
+      for (const category of allAccountsToUpdate) {
+        const updatedCategory = {
+          ...category,
+          lastUpdated: new Date().toISOString()
+        };
+        const result = await window.dataSdk.update(updatedCategory);
+        if (!result.isOk) {
+          console.error('Erro ao atualizar categoria:', result.error);
+        }
+      }
+
+      showSuccessMessage('✅ Saldo distribuído com sucesso em ' + getMonthName(currentMonth) + '!');
+
+      button.disabled = false;
+      button.innerHTML = originalText;
+      isProcessing = false;
+    }
+
+    function toggleAddForm() {
+      const form = document.getElementById('quick-add-form');
+      const icon = document.getElementById('toggle-icon');
+      const isVisible = form.style.display !== 'none';
+      
+      if (isVisible) {
+        form.style.display = 'none';
+        icon.textContent = '▼';
+      } else {
+        form.style.display = 'grid';
+        icon.textContent = '▲';
+      }
+    }
+
+    async function addCategory(event) {
+      event.preventDefault();
+      
+      if (currentData.length >= 999) {
+        showMessage('Limite de 999 contas atingido. Por favor, remova algumas contas primeiro.');
+        return;
+      }
+
+      const iconSelect = document.getElementById('quick-icon');
+      const nameInput = document.getElementById('quick-name');
+      const targetInput = document.getElementById('quick-target');
+      const dueDateInput = document.getElementById('quick-due-date');
+      const installmentsInput = document.getElementById('quick-installments');
+      
+      const icon = iconSelect.value;
+      const name = nameInput.value.trim();
+      const target = parseFloat(targetInput.value);
+      const dueDate = dueDateInput.value;
+      const installments = parseInt(installmentsInput.value) || 1;
+
+      if (!icon || !name || isNaN(target) || target <= 0 || !dueDate) {
+        showMessage('Por favor, preencha todos os campos corretamente.');
+        return;
+      }
+
+      if (installments < 1 || installments > 999) {
+        showMessage('Número de parcelas deve estar entre 1 e 999.');
+        return;
+      }
+
+      const submitBtn = event.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Adicionando...';
+
+      for (let i = 0; i < installments; i++) {
+        const installmentDate = new Date(currentMonth);
+        installmentDate.setMonth(installmentDate.getMonth() + i);
+        const installmentMonthKey = getMonthKey(installmentDate);
+        
+        const dueDateObj = new Date(dueDate + 'T00:00:00');
+        const adjustedDueDate = new Date(installmentDate.getFullYear(), installmentDate.getMonth(), dueDateObj.getDate());
+        
+        const categoryName = installments > 1 ? `${name} (${i + 1}/${installments})` : name;
+        
+        const newCategory = {
+          id: `cat-${Date.now()}-${Math.random()}-${i}`,
+          category: categoryName,
+          icon: icon,
+          target: target,
+          saved: 0,
+          dueDate: adjustedDueDate.toISOString().split('T')[0],
+          monthYear: installmentMonthKey,
+          completed: false,
+          isBalanceAccount: false,
+          kanbanStatus: 'pending',
+          totalInstallments: installments > 1 ? installments : null,
+          currentInstallmentNumber: installments > 1 ? i + 1 : null,
+          lastUpdated: new Date().toISOString()
+        };
+
+        const result = await window.dataSdk.create(newCategory);
+        if (!result.isOk) {
+          showMessage(`Erro ao adicionar parcela ${i + 1}. Tente novamente.`);
+          submitBtn.disabled = false;
+          submitBtn.textContent = '✅ Adicionar';
+          return;
+        }
+        
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+
+      iconSelect.value = '';
+      nameInput.value = '';
+      targetInput.value = '';
+      dueDateInput.value = '';
+      installmentsInput.value = '1';
+      
+      if (installments > 1) {
+        showSuccessMessage(`✅ ${installments} parcelas adicionadas com sucesso!`);
+      } else {
+        showSuccessMessage('✅ Conta adicionada com sucesso!');
+      }
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = '✅ Adicionar';
+      
+      toggleAddForm();
+    }
+
+    function showMessage(message) {
+      const container = document.getElementById('balance-container');
+      const messageDiv = document.createElement('div');
+      messageDiv.style.cssText = 'background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%); padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; color: #fecaca; font-weight: 600; box-shadow: 0 4px 12px rgba(127, 29, 29, 0.3); font-size: 14px; border: 1px solid rgba(254, 202, 202, 0.3);';
+      messageDiv.textContent = message;
+      container.insertBefore(messageDiv, container.firstChild);
+      setTimeout(() => messageDiv.remove(), 4000);
+    }
+
+    function showSuccessMessage(message) {
+      const container = document.getElementById('balance-container');
+      const messageDiv = document.createElement('div');
+      messageDiv.style.cssText = 'background: linear-gradient(135deg, #065f46 0%, #047857 100%); padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; color: #a7f3d0; font-weight: 600; box-shadow: 0 4px 12px rgba(6, 95, 70, 0.3); font-size: 14px; border: 1px solid rgba(167, 243, 208, 0.3);';
+      messageDiv.textContent = message;
+      container.insertBefore(messageDiv, container.firstChild);
+      setTimeout(() => messageDiv.remove(), 5000);
+    }
+
+    function toggleViewMode() {
+      document.body.classList.toggle('notion-mode');
+      const isNotion = document.body.classList.contains('notion-mode');
+      
+      document.getElementById('view-mode-icon').textContent = isNotion ? '☀️' : '🌙';
+      document.getElementById('view-mode-text').textContent = isNotion ? 'Claro' : 'Escuro';
+      
+      localStorage.setItem('viewMode', isNotion ? 'notion' : 'dark');
+      
+      const monthKey = getMonthKey(currentMonth);
+      const filteredData = currentData.filter(item => item.monthYear === monthKey);
+      renderChart(filteredData);
+      
+      showSuccessMessage(isNotion ? '☀️ Modo Claro ativado!' : '🌙 Modo Escuro ativado!');
+    }
+
+    function toggleLayout() {
+      const layouts = ['kanban', 'trello', 'notion'];
+      const currentIndex = layouts.indexOf(currentLayout);
+      const nextIndex = (currentIndex + 1) % layouts.length;
+      currentLayout = layouts[nextIndex];
+
+      const layoutIcon = document.getElementById('layout-icon');
+      const layoutText = document.getElementById('layout-text');
+
+      const layoutConfig = {
+        'kanban': { icon: '📋', text: 'Kanban' },
+        'trello': { icon: '📊', text: 'Trello' },
+        'notion': { icon: '📝', text: 'Notion' }
+      };
+
+      layoutIcon.textContent = layoutConfig[currentLayout].icon;
+      layoutText.textContent = layoutConfig[currentLayout].text;
+
+      localStorage.setItem('layout', currentLayout);
+
+      const monthKey = getMonthKey(currentMonth);
+      const filteredData = currentData.filter(item => item.monthYear === monthKey);
+      renderKanbanBoard(filteredData);
+
+      const messages = {
+        'kanban': '📋 Visualização Kanban ativada!',
+        'trello': '📊 Visualização Trello ativada!',
+        'notion': '📝 Visualização Notion ativada!'
+      };
+
+      showSuccessMessage(messages[currentLayout]);
+    }
+
+    function openRecoverModal() {
+      if (deletedItems.length === 0) {
+        showMessage('Não há contas excluídas para recuperar.');
+        return;
+      }
+
+      const modal = document.getElementById('recover-modal');
+      modal.style.display = 'flex';
+
+      let modalHTML = `
+        <div class="modal-overlay" id="modal-overlay">
+          <div class="modal-content">
+            <div class="modal-header">
+              <div class="modal-title">🔄 Recuperar Contas Excluídas</div>
+              <button class="modal-close" id="close-modal">×</button>
+            </div>
+            <div style="max-height: 400px; overflow-y: auto;">
+      `;
+
+      deletedItems.forEach((item, index) => {
+        const deletedDate = new Date(item.deletedAt);
+        modalHTML += `
+          <div style="background: rgba(15, 23, 42, 0.6); padding: 16px; border-radius: 10px; margin-bottom: 12px; border: 1px solid rgba(139, 92, 246, 0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 24px;">${item.icon}</span>
+                <div>
+                  <div style="font-weight: 700; color: #f8fafc; margin-bottom: 4px;">${item.category}</div>
+                  <div style="font-size: 12px; color: #94a3b8;">Excluída em: ${deletedDate.toLocaleString('pt-BR')}</div>
+                </div>
+              </div>
+              <div style="font-weight: 800; color: #8b5cf6;">${formatCurrency(item.target)}</div>
+            </div>
+            <button class="icon-btn primary" style="width: 100%; margin-top: 8px;" data-recover-index="${index}">
+              <span>↩️</span>
+              <span>Recuperar</span>
+            </button>
+          </div>
+        `;
+      });
+
+      modalHTML += `
+            </div>
+            <div style="margin-top: 20px; display: flex; gap: 12px;">
+              <button class="icon-btn primary" id="recover-all-btn" style="flex: 1;">
+                <span>↩️</span>
+                <span>Recuperar Todas</span>
+              </button>
+              <button class="icon-btn danger" id="clear-all-btn" style="flex: 1;">
+                <span>🗑️</span>
+                <span>Limpar Todas</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      modal.innerHTML = modalHTML;
+
+      document.getElementById('close-modal').addEventListener('click', () => {
+        modal.style.display = 'none';
+        modal.innerHTML = '';
+      });
+
+      document.getElementById('modal-overlay').addEventListener('click', (e) => {
+        if (e.target.id === 'modal-overlay') {
+          modal.style.display = 'none';
+          modal.innerHTML = '';
+        }
+      });
+
+      document.querySelectorAll('[data-recover-index]').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const index = parseInt(btn.dataset.recoverIndex);
+          await recoverItem(index);
+          
+          if (deletedItems.length === 0) {
+            modal.style.display = 'none';
+            modal.innerHTML = '';
+          } else {
+            openRecoverModal();
+          }
+        });
+      });
+
+      document.getElementById('recover-all-btn').addEventListener('click', async () => {
+        const count = deletedItems.length;
+        
+        for (let i = deletedItems.length - 1; i >= 0; i--) {
+          await recoverItem(i);
+        }
+        
+        modal.style.display = 'none';
+        modal.innerHTML = '';
+        showSuccessMessage(`✅ ${count} conta(s) recuperada(s) com sucesso!`);
+      });
+
+      document.getElementById('clear-all-btn').addEventListener('click', () => {
+        const count = deletedItems.length;
+        deletedItems = [];
+        updateDeletedCount();
+        modal.style.display = 'none';
+        modal.innerHTML = '';
+        showSuccessMessage(`🗑️ ${count} conta(s) removida(s) permanentemente do histórico!`);
+      });
+    }
+
+    async function recoverItem(index) {
+      const item = deletedItems[index];
+      if (!item) return;
+
+      const { __backendId, deletedAt, ...itemData } = item;
+
+      const newItem = {
+        ...itemData,
+        id: `cat-${Date.now()}-${Math.random()}`,
+        lastUpdated: new Date().toISOString()
+      };
+
+      const result = await window.dataSdk.create(newItem);
+      
+      if (result.isOk) {
+        deletedItems.splice(index, 1);
+        updateDeletedCount();
+        showSuccessMessage(`✅ ${item.category} recuperada com sucesso!`);
+      } else {
+        showMessage(`Erro ao recuperar ${item.category}. Tente novamente.`);
+      }
+    }
+
+    function clearHistory() {
+      if (deletedItems.length === 0) {
+        return;
+      }
+
+      const clearBtn = document.getElementById('clear-history-btn');
+      const originalText = clearBtn.innerHTML;
+      
+      clearBtn.innerHTML = '<span>⚠️</span><span>Confirmar?</span>';
+      clearBtn.style.background = 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)';
+
+      setTimeout(() => {
+        if (clearBtn.innerHTML.includes('Confirmar?')) {
+          clearBtn.innerHTML = originalText;
+          clearBtn.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+        }
+      }, 3000);
+
+      clearBtn.onclick = () => {
+        const count = deletedItems.length;
+        deletedItems = [];
+        updateDeletedCount();
+        showSuccessMessage(`✅ ${count} conta(s) removida(s) do histórico permanentemente!`);
+        
+        clearBtn.innerHTML = originalText;
+        clearBtn.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+        clearBtn.onclick = clearHistory;
+      };
+    }
+
+    function exportData() {
+      const monthKey = getMonthKey(currentMonth);
+      const monthData = currentData.filter(item => item.monthYear === monthKey);
+      const regularAccounts = monthData.filter(cat => !cat.isBalanceAccount);
+      
+      if (regularAccounts.length === 0) {
+        showMessage('Não há dados para exportar neste mês.');
+        return;
+      }
+
+      let csv = 'Categoria,Ícone,Meta,Economizado,Faltando,Progresso,Vencimento,Status,Coluna Kanban\n';
+      
+      regularAccounts.forEach(cat => {
+        const remaining = Math.max(cat.target - cat.saved, 0);
+        const progress = ((cat.saved / cat.target) * 100).toFixed(1);
+        const status = cat.saved >= cat.target ? 'Completo' : 'Em Andamento';
+        const kanbanStatus = getKanbanStatus(cat);
+        const kanbanLabel = kanbanStatus === 'pending' ? 'A Pagar' : 'Pagas';
+        
+        csv += `"${cat.category}","${cat.icon}",${cat.target.toFixed(2)},${cat.saved.toFixed(2)},${remaining.toFixed(2)},${progress}%,${formatDate(cat.dueDate)},"${status}","${kanbanLabel}"\n`;
+      });
+
+      const totalTarget = regularAccounts.reduce((sum, cat) => sum + cat.target, 0);
+      const totalSaved = regularAccounts.reduce((sum, cat) => sum + cat.saved, 0);
+      const totalRemaining = Math.max(totalTarget - totalSaved, 0);
+      
+      csv += `\nResumo do Mês: ${getMonthName(currentMonth)}\n`;
+      csv += `Total de Contas,${regularAccounts.length}\n`;
+      csv += `Meta Total,${totalTarget.toFixed(2)}\n`;
+      csv += `Total Economizado,${totalSaved.toFixed(2)}\n`;
+      csv += `Falta Economizar,${totalRemaining.toFixed(2)}\n`;
+      csv += `Progresso Geral,${((totalSaved/totalTarget)*100).toFixed(1)}%\n`;
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `controle-contas-v74-${monthKey}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      showSuccessMessage('✅ Dados exportados com sucesso!');
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetTab = btn.dataset.tab;
+        
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+        document.getElementById(`tab-${targetTab}`).classList.add('active');
+      });
+    });
+
+    document.getElementById('add-daily-btn').addEventListener('click', addDailyDeposit);
+    document.getElementById('use-balance-btn').addEventListener('click', useBalanceToDistribute);
+    document.getElementById('quick-add-form').addEventListener('submit', addCategory);
+    document.getElementById('toggle-form-header').addEventListener('click', toggleAddForm);
+    document.getElementById('toggle-form-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleAddForm();
+    });
+    
+    const dailyValueInput = document.getElementById('daily-value');
+    dailyValueInput.addEventListener('input', function(e) {
+      formatCurrencyInput(e.target);
+    });
+    dailyValueInput.addEventListener('focus', function(e) {
+      if (e.target.value === '') {
+        e.target.value = 'R$ 0,00';
+      }
+    });
+    
+    document.getElementById('layout-toggle').addEventListener('click', toggleLayout);
+    document.getElementById('view-mode-toggle').addEventListener('click', toggleViewMode);
+    document.getElementById('export-btn').addEventListener('click', exportData);
+    document.getElementById('recover-btn').addEventListener('click', openRecoverModal);
+    document.getElementById('clear-history-btn').addEventListener('click', clearHistory);
+    
+    document.getElementById('prev-month').addEventListener('click', () => {
+      currentMonth.setMonth(currentMonth.getMonth() - 1);
+      updateMonthDisplay();
+    });
+    
+    document.getElementById('next-month').addEventListener('click', () => {
+      currentMonth.setMonth(currentMonth.getMonth() + 1);
+      updateMonthDisplay();
+    });
+
+    async function initializeApp() {
+      const savedViewMode = localStorage.getItem('viewMode');
+      if (savedViewMode === 'notion') {
+        document.body.classList.add('notion-mode');
+        document.getElementById('view-mode-icon').textContent = '☀️';
+        document.getElementById('view-mode-text').textContent = 'Claro';
+      } else {
+        document.getElementById('view-mode-icon').textContent = '🌙';
+        document.getElementById('view-mode-text').textContent = 'Escuro';
+      }
+
+      const savedLayout = localStorage.getItem('layout');
+      if (savedLayout && ['kanban', 'trello', 'notion'].includes(savedLayout)) {
+        currentLayout = savedLayout;
+        const layoutConfig = {
+          'kanban': { icon: '📋', text: 'Kanban' },
+          'trello': { icon: '📊', text: 'Trello' },
+          'notion': { icon: '📝', text: 'Notion' }
+        };
+        document.getElementById('layout-icon').textContent = layoutConfig[currentLayout].icon;
+        document.getElementById('layout-text').textContent = layoutConfig[currentLayout].text;
+      }
+
+      const initResult = await window.dataSdk.init(dataHandler);
+      if (!initResult.isOk) {
+        console.error('Erro ao inicializar Data SDK');
+      }
+
+      if (window.elementSdk) {
+        await window.elementSdk.init({
+          defaultConfig,
+          onConfigChange,
+          mapToCapabilities: (config) => ({
+            recolorables: [
+              {
+                get: () => config.background_color || defaultConfig.background_color,
+                set: (value) => {
+                  window.elementSdk.config.background_color = value;
+                  window.elementSdk.setConfig({ background_color: value });
+                }
+              },
+              {
+                get: () => config.card_color || defaultConfig.card_color,
+                set: (value) => {
+                  window.elementSdk.config.card_color = value;
+                  window.elementSdk.setConfig({ card_color: value });
+                }
+              },
+              {
+                get: () => config.text_color || defaultConfig.text_color,
+                set: (value) => {
+                  window.elementSdk.config.text_color = value;
+                  window.elementSdk.setConfig({ text_color: value });
+                }
+              },
+              {
+                get: () => config.primary_action_color || defaultConfig.primary_action_color,
+                set: (value) => {
+                  window.elementSdk.config.primary_action_color = value;
+                  window.elementSdk.setConfig({ primary_action_color: value });
+                }
+              },
+              {
+                get: () => config.progress_color || defaultConfig.progress_color,
+                set: (value) => {
+                  window.elementSdk.config.progress_color = value;
+                  window.elementSdk.setConfig({ progress_color: value });
+                }
+              }
+            ],
+            borderables: [],
+            fontEditable: {
+              get: () => config.font_family || defaultConfig.font_family,
+              set: (value) => {
+                window.elementSdk.config.font_family = value;
+                window.elementSdk.setConfig({ font_family: value });
+              }
+            },
+            fontSizeable: {
+              get: () => config.font_size || defaultConfig.font_size,
+              set: (value) => {
+                window.elementSdk.config.font_size = value;
+                window.elementSdk.setConfig({ font_size: value });
+              }
+            }
+          }),
+          mapToEditPanelValues: (config) => new Map([
+            ["app_title", config.app_title || defaultConfig.app_title],
+            ["daily_amount_label", config.daily_amount_label || defaultConfig.daily_amount_label],
+            ["budget_label", config.budget_label || defaultConfig.budget_label]
+          ])
+        });
+      }
+
+      setupDragAndDrop();
+    }
+
+    initializeApp();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b731c1d06168aef',t:'MTc2NzI4MTk3MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
