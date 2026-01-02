@@ -6,15 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sales Force V35 - Oficial Cloud</title>
     
-    <!-- PWA: CONFIGURAÇÃO APP NATIVO -->
-    <link rel="manifest" href="manifest.json">
+    <!-- PWA CONFIG -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="icon" type="image/png" href="https://i.postimg.cc/MTGzyVGF/file-0000000092c471f5b7a5391ae5ba35f5-1.png">
     <link rel="apple-touch-icon" href="https://i.postimg.cc/MTGzyVGF/file-0000000092c471f5b7a5391ae5ba35f5-1.png">
 
-    <!-- SDKs FIREBASE COMPAT -->
+    <!-- SDKs FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     
@@ -42,7 +41,7 @@
 
     <div id="loading">
         <div class="spinner"></div>
-        <p class="mt-4 text-[10px] text-blue-400 font-bold uppercase animate-pulse tracking-widest text-center px-6">Sincronizando Cloud v36.9.8...</p>
+        <p class="mt-4 text-[10px] text-blue-400 font-bold uppercase animate-pulse tracking-widest text-center px-6">Sincronizando v37.2...</p>
     </div>
 
     <div id="toast" class="fixed top-5 right-5 z-[9999] bg-gray-800 border-l-4 border-green-500 text-white px-6 py-4 rounded-xl shadow-2xl hidden"><span id="toast-msg" class="font-bold text-sm"></span></div>
@@ -66,7 +65,7 @@
             <div class="flex items-center gap-3">
                 <img src="https://i.postimg.cc/MTGzyVGF/file-0000000092c471f5b7a5391ae5ba35f5-1.png" class="w-12 h-12 rounded-lg border border-gray-700 shadow-lg">
                 <div>
-                    <p class="text-gray-500 text-[9px] uppercase font-bold tracking-widest leading-none">Painel Cloud v35</p>
+                    <p class="text-gray-500 text-[9px] uppercase font-bold tracking-widest leading-none" id="u-role-label">Painel Online</p>
                     <h2 class="text-xl font-black text-white uppercase leading-none" id="u-name">...</h2>
                 </div>
             </div>
@@ -77,12 +76,6 @@
             
             <!-- ABA HOME -->
             <div id="tab-home" class="space-y-6">
-                <div id="store-goal-area" class="glass p-5 rounded-3xl border-l-4 border-amber-500 hidden shadow-xl">
-                    <div class="flex justify-between items-center mb-1"><span class="text-[10px] font-black uppercase text-amber-500 tracking-widest">Meta Global da Loja</span><span class="text-xs font-black" id="store-goal-pct">0%</span></div>
-                    <div class="bar-bg mb-2"><div id="store-bar-fill" class="bar-fill bg-amber-500" style="width: 0%"></div></div>
-                    <p class="text-[10px] text-gray-500 text-center font-black uppercase tracking-tighter" id="store-goal-text">Sincronizando loja...</p>
-                </div>
-
                 <div class="grid grid-cols-2 gap-3 text-center">
                     <div class="glass p-5 rounded-2xl border-l-4 border-blue-500 shadow-xl"><p class="text-[9px] text-blue-400 font-bold uppercase tracking-widest">Vendido Mês</p><h3 class="text-xl font-black text-white" id="d-total">R$ 0,00</h3></div>
                     <div class="glass p-5 rounded-2xl border-l-4 border-green-500 shadow-xl"><p class="text-[9px] text-green-400 font-bold uppercase tracking-widest">Comissão (2.2%)</p><h3 class="text-xl font-black text-white" id="d-my-profit">R$ 0,00</h3></div>
@@ -98,7 +91,7 @@
                 </div>
 
                 <!-- RESUMO DE SERVIÇOS (8 CARDS FIXOS) -->
-                <h3 class="text-gray-500 text-[10px] font-black uppercase mb-2 pl-1 tracking-widest">Resumo Detalhado (Mês)</h3>
+                <h3 class="text-gray-500 text-[10px] font-black uppercase mb-2 pl-1 tracking-widest">Resumo do Mês Atual</h3>
                 <div class="grid grid-cols-2 gap-3" id="resumo-grid">
                     <div class="glass p-4 rounded-xl border-b border-gray-700 shadow-md text-center"><span class="text-[9px] text-blue-400 font-bold block uppercase tracking-tighter">Monetário 2.2%</span><span class="text-lg font-black text-white" id="r-cprod">R$ 0</span></div>
                     <div class="glass p-4 rounded-xl border-b border-gray-700 shadow-md text-center"><span class="text-[9px] text-green-400 font-bold block uppercase tracking-tighter">Assistência</span><span class="text-lg font-black text-white" id="r-assist">R$ 0</span></div>
@@ -107,7 +100,7 @@
                     <div class="glass p-4 rounded-xl border-b border-gray-700 shadow-md text-center"><span class="text-[9px] text-cyan-400 font-bold block uppercase tracking-tighter">Extra Lavagem</span><span class="text-lg font-black text-white" id="r-lav">R$ 0</span></div>
                     <div class="glass p-4 rounded-xl border-b border-gray-700 shadow-md text-center"><span class="text-[9px] text-blue-400 font-bold block uppercase tracking-tighter">Extra Montagem</span><span class="text-lg font-black text-white" id="r-mon">R$ 0</span></div>
                     <div class="glass p-4 rounded-xl border-b border-gray-700 shadow-md text-center"><span class="text-[9px] text-pink-400 font-bold block uppercase tracking-tighter">Extra Almofada</span><span class="text-lg font-black text-white" id="r-alm">R$ 0</span></div>
-                    <div class="glass p-4 rounded-xl col-span-2 text-center shadow-lg"><span class="text-[9px] text-yellow-400 font-bold block uppercase">Extra Pés de Guarda-roupa</span><span class="text-xl font-black text-white" id="r-pes">R$ 0</span></div>
+                    <div class="glass p-4 rounded-xl col-span-2 text-center shadow-lg"><span class="text-[9px] text-yellow-400 font-bold block uppercase">Extra Pés G-Roupa</span><span class="text-xl font-black text-white" id="r-pes">R$ 0</span></div>
                 </div>
 
                 <div class="glass p-4 rounded-2xl mb-6 border border-gray-700/50 shadow-md">
@@ -148,7 +141,7 @@
                 <div class="bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 p-8 rounded-[2.5rem] border border-purple-500/30 text-center shadow-2xl">
                     <p class="text-purple-300 text-[10px] font-bold uppercase tracking-widest">Premiação Performance Estimada</p>
                     <h2 class="text-4xl font-black my-2" id="m-bonus">R$ 0,00</h2>
-                    <span id="m-badge" class="bg-black/30 px-5 py-1 rounded-full text-[11px] font-black text-yellow-400 uppercase tracking-widest border border-yellow-500/30">Nível 0</span>
+                    <span id="m-badge" class="bg-black/30 px-5 py-1 rounded-full text-[11px] font-black text-yellow-400 uppercase tracking-widest border border-yellow-500/30 font-black">Nível 0</span>
                 </div>
                 <div id="goals-bars" class="space-y-5"></div>
             </div>
@@ -168,7 +161,7 @@
                         <div>Imper<input type="number" id="mgr-val-imp" class="input-box text-center p-2 mt-1"></div>
                         <div>Montagem<input type="number" id="mgr-val-mon" class="input-box text-center p-2 mt-1"></div>
                         <div>Almofada<input type="number" id="mgr-val-alm" class="input-box text-center p-2 mt-1"></div>
-                        <div class="col-span-2">Pés Guarda-roupa<input type="number" id="mgr-val-pes" class="input-box text-center p-2 mt-1"></div>
+                        <div class="col-span-2">Pés G-Roupa<input type="number" id="mgr-val-pes" class="input-box text-center p-2 mt-1"></div>
                     </div>
                     <div class="mt-4 pt-4 border-t border-gray-700 text-center"><label class="text-[9px] text-amber-500 font-black uppercase">Meta Global da Loja (R$)</label><input type="number" id="mgr-goal-p" class="input-box text-center font-black mt-1"></div>
                     <button onclick="sys.mgrUpdateStoreSettings()" class="w-full bg-purple-600 font-black py-3 rounded-xl uppercase text-[10px] mt-4 shadow-lg">Salvar Config Loja</button>
@@ -208,8 +201,8 @@
             <div id="tab-admin" class="hidden space-y-6 pb-32 text-center">
                 <div class="glass p-6 rounded-[2rem] shadow-xl border border-blue-500">
                     <h3 class="font-black text-xs uppercase mb-4 text-blue-400 tracking-widest">Novo Gerente de Loja</h3>
-                    <input type="text" id="adm-new-mgr" class="input-box uppercase mb-2 font-bold" placeholder="NOME DO GERENTE">
-                    <input type="password" id="adm-new-pass" class="input-box mb-2 font-bold" placeholder="SENHA">
+                    <input type="text" id="adm-new-mgr" class="input-box uppercase font-bold mb-2" placeholder="NOME DO GERENTE">
+                    <input type="password" id="adm-new-pass" class="input-box mb-2" placeholder="SENHA">
                     <input type="text" id="adm-new-store" class="input-box uppercase mb-3 font-bold" placeholder="NOME DA LOJA">
                     <button onclick="sys.adminCreateManager()" class="w-full bg-blue-600 font-black py-4 rounded-xl uppercase text-xs">Criar Unidade</button>
                 </div>
@@ -277,11 +270,6 @@
     </div>
 
     <script>
-        // GATILHO PWA: REGISTRO DO SERVICE WORKER
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').then(() => console.log("PWA Ativo"));
-        }
-
         const firebaseConfig = {
             apiKey: "AIzaSyAZ6Zp-XRhmJaqyrA806YxGAYo3TyFttpQ",
             authDomain: "b-dados-sistema.firebaseapp.com",
@@ -317,8 +305,14 @@
 
                     this.user = { id: u, ...data };
                     document.getElementById('u-name').innerText = u;
-                    if(data.r === 'admin') { document.getElementById('nav-admin').classList.remove('hidden'); document.getElementById('nav-config').classList.remove('hidden'); }
+                    
+                    // VISIBILIDADE DOS BOTÕES CONFORME CARGO
+                    if(data.r === 'admin') {
+                        document.getElementById('nav-admin').classList.remove('hidden');
+                        document.getElementById('nav-config').classList.remove('hidden');
+                    }
                     if(data.r === 'manager') document.getElementById('nav-team').classList.remove('hidden');
+
                     await this.loadInitialData();
                     document.getElementById('view-login').classList.add('hidden');
                     document.getElementById('view-app').classList.remove('hidden');
@@ -376,26 +370,16 @@
                 document.getElementById('r-alm').innerText = this.fmt(t.alm);
 
                 const C = this.config;
-                const pV = t.p; const aV = t.a; const iV = t.i;
-                let pct = (pV>=C.n3.p && aV>=C.n3.a && iV>=C.n3.i) ? 0.011 : (pV>=C.n2.p && aV>=C.n2.a && iV>=C.n2.i) ? 0.006 : (pV>=C.n1.p && aV>=C.n1.a && iV>=C.n1.i) ? 0.003 : 0;
+                const pV = Number(t.p); const aV = Number(t.a); const iV = Number(t.i);
+                let pct = (pV>=Number(C.n3.p) && aV>=Number(C.n3.a) && iV>=Number(C.n3.i)) ? 0.011 : (pV>=Number(C.n2.p) && aV>=Number(C.n2.a) && iV>=Number(C.n2.i)) ? 0.006 : (pV>=Number(C.n1.p) && aV>=Number(C.n1.a) && iV>=Number(C.n1.i)) ? 0.003 : 0;
                 document.getElementById('m-bonus').innerText = this.fmt(pV * pct);
                 document.getElementById('m-badge').innerText = pct === 0.011 ? "Nível 3 🔥" : pct === 0.006 ? "Nível 2 🥈" : pct === 0.003 ? "Nível 1 🥉" : "Nível 0";
 
                 document.getElementById('goals-bars').innerHTML = `
-                    ${this.renderBar("Produto Individual", pV, C.n2.p, "blue")}
-                    ${this.renderBar("Assistência Individual", aV, C.n2.a, "green")}
-                    ${this.renderBar("Impermeab. Individual", iV, C.n2.i, "purple")}
+                    ${this.renderBar("Produto Individual", pV, Number(C.n2.p), "blue")}
+                    ${this.renderBar("Assistência Individual", aV, Number(C.n2.a), "green")}
+                    ${this.renderBar("Impermeab. Individual", iV, Number(C.n2.i), "purple")}
                 `;
-
-                if(this.user.store && this.user.r !== 'admin') {
-                    let totalVendaLoja = filtradosLoja.reduce((acc, curr) => acc + (curr.v.p || 0), 0);
-                    const goal = this.storeData.goal || 0;
-                    const pctL = goal > 0 ? Math.min((totalVendaLoja/goal)*100, 100).toFixed(1) : 0;
-                    document.getElementById('store-goal-area').classList.remove('hidden');
-                    document.getElementById('store-bar-fill').style.width = pctL + '%';
-                    document.getElementById('store-goal-pct').innerText = pctL + '%';
-                    document.getElementById('store-goal-text').innerText = `LOJA: ${this.user.store} | VENDIDO R$ ${totalVendaLoja.toLocaleString()}`;
-                }
 
                 const list = document.getElementById('list-sales'); list.innerHTML = "";
                 filtradosMeus.slice(0, 10).forEach(s => {
@@ -420,6 +404,18 @@
                     document.getElementById('loading').style.display='none';
                     this.renderHome();
                 }
+            },
+
+            async saveOrder() {
+                const ord = document.getElementById('i-ord').value;
+                if(!ord) return alert("Nº do pedido!");
+                const c = this.calc();
+                document.getElementById('loading').style.display='flex';
+                await db.collection('sales').add({ seller: this.user.id, store: this.user.store, order: ord, v: {p:c.p, a:c.a, i:c.i}, bonus: c.f, preview: c.t, date: new Date().toISOString(), q: {lav:this.g('q-lav'), imp:this.g('q-imp'), mon:this.g('q-mon'), alm:this.g('q-alm'), pes:this.g('q-pes')} });
+                ['i-ord','i-prod','i-ass','i-imp','q-lav','q-imp','q-mon','q-alm','q-pes'].forEach(id => { document.getElementById(id).value = ''; });
+                document.getElementById('preview').innerText = this.fmt(0);
+                await this.loadInitialData(); this.closeModal('modal-pedido'); document.getElementById('loading').style.display='none'; this.renderHome();
+                this.toast("Salvo com Sucesso!");
             },
 
             async adminAddMonths(id) {
@@ -457,7 +453,7 @@
                 const snap = await db.collection('users').get();
                 const list = document.getElementById('adm-user-list'); list.innerHTML = "";
                 snap.forEach(doc => {
-                    const u = doc.data(); if(u.id === 'admin') return;
+                    const u = doc.data(); if(u.r==='admin') return;
                     const dias = Math.max(0, Math.ceil((u.exp - Date.now()) / 86400000));
                     list.innerHTML += `<div class="glass p-4 rounded-2xl mb-3 border border-gray-700 shadow-xl text-left"><div class="flex justify-between items-center mb-3"><div><span class="font-black uppercase text-sm">${doc.id}</span> <span class="text-[9px] text-gray-500">(${u.r})</span> ${u.b?'🔴':'🟢'}</div><span class="text-blue-400 font-black text-xs">${dias} Dias</span></div><div class="grid grid-cols-2 gap-2"><select id="months-${doc.id}" class="input-box p-1 text-xs bg-gray-900 border-gray-600 font-black"><option value="1">+ 1 Mês</option><option value="3">+ 3 Meses</option><option value="6">+ 6 Meses</option><option value="12">+ 1 Ano</option></select><button onclick="sys.adminAddMonths('${doc.id}')" class="bg-green-600 rounded-lg text-[9px] font-black uppercase py-1 shadow-lg">Add Crédito</button><button onclick="sys.adminToggle('${doc.id}')" class="bg-gray-700 rounded-lg text-[9px] font-black uppercase py-2 tracking-tighter">${u.b?'Ativar':'Bloquear'}</button><button onclick="sys.adminDelUser('${doc.id}')" class="bg-red-900/30 text-red-500 rounded-lg text-[9px] font-black uppercase py-2 tracking-tighter">Apagar</button></div></div>`;
                 });
@@ -527,29 +523,17 @@
                     ['n1','n2','n3'].forEach(n => { document.getElementById(`c-${n}-prod`).value = c[n].p; document.getElementById(`c-${n}-ass`).value = c[n].a; document.getElementById(`c-${n}-imp`).value = c[n].i; });
                 }
             },
-            logout(){ localStorage.removeItem('v35_session'); location.reload(); },
+            logout(){ location.reload(); },
             openModal(id){ document.getElementById(id).classList.remove('hidden'); document.getElementById(id).classList.add('flex'); },
             closeModal(id){ document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); },
             toast(m){ const t=document.getElementById('toast'); document.getElementById('toast-msg').innerText=m; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'),3000); },
-            async saveOrder() {
-                const ord = document.getElementById('i-ord').value;
-                if(!ord) return;
-                const c = this.calc();
-                document.getElementById('loading').style.display='flex';
-                await db.collection('sales').add({ seller: this.user.id, store: this.user.store, order: ord, v: {p:c.p, a:c.a, i:c.i}, bonus: c.f, preview: c.t, date: new Date().toISOString(), q: {lav:this.g('q-lav'), imp:this.g('q-imp'), mon:this.g('q-mon'), alm:this.g('q-alm'), pes:this.g('q-pes')} });
-                await this.loadInitialData(); this.closeModal('modal-pedido'); document.getElementById('loading').style.display='none'; this.renderHome();
-            },
-            async saveConfig() {
-                const cfg = { n1:{p:this.g('c-n1-prod'), a:this.g('c-n1-ass'), i:this.g('c-n1-imp')}, n2:{p:this.g('c-n2-prod'), a:this.g('c-n2-ass'), i:this.g('c-n2-imp')}, n3:{p:this.g('c-n3-prod'), a:this.g('c-n3-ass'), i:this.g('c-n3-imp')} };
-                await db.collection('settings').doc('global').set(cfg); this.config = cfg; alert("Salvo!");
-            },
             generatePeriodReport() {
                 const dStart = document.getElementById('date-start').value; const dEnd = document.getElementById('date-end').value;
                 if(!dStart || !dEnd) return;
                 const start = new Date(dStart + "T00:00:00"); const end = new Date(dEnd + "T23:59:59");
                 const filtrados = this.allSales.filter(s => { const d = new Date(s.date); return d >= start && d <= end && s.seller === this.user.id; });
                 let t = {p:0, a:0, f:0, qtd:0};
-                filtrados.forEach(s => { t.qtd++; t.p += (s.v.p || 0); t.a += (s.v.a || 0); t.i += (s.v.i || 0); t.f += (s.bonus || 0); });
+                filtrados.forEach(s => { t.qtd++; t.p += (s.v.p || 0); t.a += (s.v.a || 0); t.f += (s.bonus || 0); });
                 const totalFinal = (t.p * 0.022) + (t.a * 0.05) + t.f;
                 document.getElementById('period-details-body').innerHTML = `<div class="space-y-3 text-center uppercase font-bold text-gray-400"><div class="flex justify-between border-b border-gray-700 pb-1 text-[11px]"><span>Total Pedidos:</span><b>${t.qtd}</b></div><div class="flex justify-between border-b border-gray-700 pb-1 text-[11px]"><span>Venda Bruta Prod:</span><b>${this.fmt(t.p)}</b></div><div class="pt-4 text-xs uppercase text-gray-500 font-black tracking-widest">Total no Período</div><div class="text-3xl font-black text-blue-400">${this.fmt(totalFinal)}</div></div>`;
                 this.openModal('modal-periodo');
