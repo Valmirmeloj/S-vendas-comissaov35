@@ -48,7 +48,7 @@
 
     <!-- LOGIN -->
     <div id="view-login" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-[#0f172a] hidden text-center">
-        <div class="glass rounded-[2rem] w-full max-w-sm shadow-2xl overflow-hidden border border-gray-700">
+        <div class="glass rounded-[2rem] w-full max-sm shadow-2xl overflow-hidden border border-gray-700">
             <img src="https://i.postimg.cc/MTGzyVGF/file-0000000092c471f5b7a5391ae5ba35f5-1.png" class="w-full h-auto">
             <div class="p-8 pt-4 space-y-4">
                 <input type="text" id="login-user" class="input-box text-center font-black uppercase tracking-widest" placeholder="USUÁRIO">
@@ -175,13 +175,13 @@
                     <h3 class="text-yellow-500 font-black text-xs uppercase mb-6 tracking-widest uppercase font-black text-left">Configuração das Metas Globais</h3>
                     <div class="space-y-6" id="config-inputs">
                         <div class="grid grid-cols-3 gap-2">
-                            <div class="col-span-3 text-[9px] font-black text-gray-500 uppercase border-b border-gray-700 pb-1 text-left">Nível 1 (0.3%)</div>
+                            <div class="col-span-3 text-[9px] font-black text-gray-500 uppercase border-b border-gray-700 pb-1 text-left">Nível 1 (0.6%)</div>
                             <input type="number" id="c-n1-prod" class="input-box text-center p-2 text-xs font-black">
                             <input type="number" id="c-n1-ass" class="input-box text-center p-2 text-xs font-black">
                             <input type="number" id="c-n1-imp" class="input-box text-center p-2 text-xs font-black">
                         </div>
                         <div class="grid grid-cols-3 gap-2 border-t border-gray-700 pt-4">
-                            <div class="col-span-3 text-[9px] font-black text-gray-500 uppercase border-b border-gray-700 pb-1 text-left">Nível 2 (0.6%)</div>
+                            <div class="col-span-3 text-[9px] font-black text-gray-500 uppercase border-b border-gray-700 pb-1 text-left">Nível 2 (0.8%)</div>
                             <input type="number" id="c-n2-prod" class="input-box text-center p-2 text-xs font-black">
                             <input type="number" id="c-n2-ass" class="input-box text-center p-2 text-xs font-black">
                             <input type="number" id="c-n2-imp" class="input-box text-center p-2 text-xs font-black">
@@ -371,9 +371,11 @@
 
                 const C = this.config;
                 const pV = Number(t.p); const aV = Number(t.a); const iV = Number(t.i);
-                let pct = (pV>=Number(C.n3.p) && aV>=Number(C.n3.a) && iV>=Number(C.n3.i)) ? 0.011 : (pV>=Number(C.n2.p) && aV>=Number(C.n2.a) && iV>=Number(C.n2.i)) ? 0.006 : (pV>=Number(C.n1.p) && aV>=Number(C.n1.a) && iV>=Number(C.n1.i)) ? 0.003 : 0;
+                // ATUALIZAÇÃO REGRA 3 METAS: 0.6%, 0.8% e 1.1%
+                let pct = (pV>=Number(C.n3.p) && aV>=Number(C.n3.a) && iV>=Number(C.n3.i)) ? 0.011 : (pV>=Number(C.n2.p) && aV>=Number(C.n2.a) && iV>=Number(C.n2.i)) ? 0.008 : (pV>=Number(C.n1.p) && aV>=Number(C.n1.a) && iV>=Number(C.n1.i)) ? 0.006 : 0;
+                
                 document.getElementById('m-bonus').innerText = this.fmt(pV * pct);
-                document.getElementById('m-badge').innerText = pct === 0.011 ? "Nível 3 🔥" : pct === 0.006 ? "Nível 2 🥈" : pct === 0.003 ? "Nível 1 🥉" : "Nível 0";
+                document.getElementById('m-badge').innerText = pct === 0.011 ? "Nível 3 🔥" : pct === 0.008 ? "Nível 2 🥈" : pct === 0.006 ? "Nível 1 🥉" : "Nível 0";
 
                 document.getElementById('goals-bars').innerHTML = `
                     ${this.renderBar("Produto Individual", pV, Number(C.n2.p), "blue")}
@@ -537,9 +539,20 @@
                 const totalFinal = (t.p * 0.022) + (t.a * 0.05) + t.f;
                 document.getElementById('period-details-body').innerHTML = `<div class="space-y-3 text-center uppercase font-bold text-gray-400"><div class="flex justify-between border-b border-gray-700 pb-1 text-[11px]"><span>Total Pedidos:</span><b>${t.qtd}</b></div><div class="flex justify-between border-b border-gray-700 pb-1 text-[11px]"><span>Venda Bruta Prod:</span><b>${this.fmt(t.p)}</b></div><div class="pt-4 text-xs uppercase text-gray-500 font-black tracking-widest">Total no Período</div><div class="text-3xl font-black text-blue-400">${this.fmt(totalFinal)}</div></div>`;
                 this.openModal('modal-periodo');
+            },
+            async saveConfig() {
+                const conf = {
+                    n1: { p: this.g('c-n1-prod'), a: this.g('c-n1-ass'), i: this.g('c-n1-imp') },
+                    n2: { p: this.g('c-n2-prod'), a: this.g('c-n2-ass'), i: this.g('c-n2-imp') },
+                    n3: { p: this.g('c-n3-prod'), a: this.g('c-n3-ass'), i: this.g('c-n3-imp') }
+                };
+                await db.collection('settings').doc('global').set(conf);
+                this.config = conf;
+                alert("Metas Globais Atualizadas!");
+                this.renderHome();
             }
         };
         sys.init();
-    </script> 
+    </script>
 </body>
 </html>
