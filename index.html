@@ -1,12 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sales Force V37 - Oficial Cloud</title>
+    <title>Sales Force V39 - Platinum Cloud</title>
     
-    <!-- PWA CONFIG -->
+    <!-- CONFIGURAÇÕES PWA -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -34,18 +33,13 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .modal-up { animation: slideUp 0.3s ease-out; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .img-premium { width: 100%; height: auto; display: block; border-radius: 20px 20px 0 0; border-bottom: 1px solid #334155; }
     </style>
 </head>
 <body class="flex flex-col h-screen overflow-hidden">
 
     <div id="loading">
         <div class="spinner"></div>
-        <p class="mt-4 text-[10px] text-blue-400 font-bold uppercase animate-pulse tracking-widest text-center px-6">Sincronizando v37.2 Final...</p>
-    </div>
-
-    <div id="toast" class="fixed top-5 right-5 z-[9999] bg-gray-800 border-l-4 border-green-500 text-white px-6 py-4 rounded-xl shadow-2xl hidden transition-all">
-        <span id="toast-msg" class="font-bold text-sm"></span>
+        <p class="mt-4 text-[10px] text-blue-400 font-bold uppercase animate-pulse tracking-widest text-center px-6">Verificando Blindagem v39.0...</p>
     </div>
 
     <!-- LOGIN -->
@@ -67,7 +61,7 @@
             <div class="flex items-center gap-3">
                 <img src="https://i.postimg.cc/MTGzyVGF/file-0000000092c471f5b7a5391ae5ba35f5-1.png" class="w-12 h-12 rounded-lg border border-gray-700 shadow-lg">
                 <div>
-                    <p class="text-gray-500 text-[9px] uppercase font-bold tracking-widest leading-none" id="u-role-label">Painel Online</p>
+                    <p class="text-gray-500 text-[9px] uppercase font-bold tracking-widest leading-none">Painel Oficial</p>
                     <h2 class="text-xl font-black text-white uppercase leading-none" id="u-name">...</h2>
                 </div>
             </div>
@@ -78,97 +72,84 @@
             
             <!-- ABA HOME -->
             <div id="tab-home" class="space-y-6">
-                <div id="store-goal-area" class="glass p-5 rounded-3xl border-l-4 border-amber-500 hidden shadow-xl">
-                    <div class="flex justify-between items-center mb-1"><span class="text-[10px] font-black uppercase text-amber-500 tracking-widest">Meta Global da Loja</span><span class="text-xs font-black" id="store-goal-pct">0%</span></div>
+                <!-- Meta da Loja (Visível para todos se configurado pelo Gerente) -->
+                <div id="store-goal-area" class="glass p-5 rounded-3xl border-l-4 border-amber-500 hidden">
+                    <div class="flex justify-between items-center mb-1"><span class="text-[10px] font-black uppercase text-amber-500">Meta Global da Loja</span><span class="text-xs font-black" id="store-goal-pct">0%</span></div>
                     <div class="bar-bg mb-2"><div id="store-bar-fill" class="bar-fill bg-amber-500" style="width: 0%"></div></div>
-                    <p class="text-[10px] text-gray-500 text-center font-black uppercase tracking-tighter" id="store-goal-text">Sincronizando loja...</p>
+                    <p class="text-[9px] text-gray-500 text-center font-bold" id="store-goal-text">Sincronizando...</p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3 text-center">
-                    <div class="glass p-5 rounded-2xl border-l-4 border-blue-500 shadow-xl"><p class="text-[9px] text-blue-400 font-bold uppercase tracking-widest">Vendido Mês</p><h3 class="text-xl font-black text-white" id="d-total">R$ 0,00</h3></div>
-                    <div class="glass p-5 rounded-2xl border-l-4 border-green-500 shadow-xl"><p class="text-[9px] text-green-400 font-bold uppercase tracking-widest">Comissão (2.2%)</p><h3 class="text-xl font-black text-white" id="d-my-profit">R$ 0,00</h3></div>
+                    <div class="glass p-5 rounded-2xl border-l-4 border-blue-500 shadow-xl"><p class="text-[9px] text-blue-400 font-bold uppercase">Vendido Mês</p><h3 class="text-xl font-black text-white" id="d-total">R$ 0,00</h3></div>
+                    <div class="glass p-5 rounded-2xl border-l-4 border-green-500 shadow-xl"><p class="text-[9px] text-green-400 font-bold uppercase">Comissão (2.2%)</p><h3 class="text-xl font-black text-white" id="d-my-profit">R$ 0,00</h3></div>
                 </div>
 
-                <div id="manager-profit-card" class="glass p-6 rounded-3xl border-l-4 border-purple-500 hidden shadow-xl text-center">
+                <!-- Card de Ganho do Gerente (Oculto para Vendedor) -->
+                <div id="mgr-profit-card" class="glass p-6 rounded-3xl border-l-4 border-purple-500 hidden text-center">
                     <p class="text-[10px] text-purple-400 font-bold uppercase tracking-widest">Ganho Gerencial Equipe</p>
-                    <h3 class="text-3xl font-black text-white" id="r-manager-team-profit">R$ 0,00</h3>
+                    <h3 class="text-3xl font-black text-white" id="r-mgr-team-profit">R$ 0,00</h3>
                 </div>
 
                 <div class="mb-2">
-                    <button onclick="sys.openModal('modal-pedido')" class="w-full bg-blue-600 text-white p-6 rounded-[1.5rem] flex items-center justify-center gap-4 shadow-xl active:scale-95 transition-all uppercase font-black tracking-widest text-lg"><i class="fas fa-plus-circle text-2xl text-white"></i> Novo Pedido</button>
+                    <button onclick="sys.openModal('modal-pedido')" class="w-full bg-blue-600 text-white p-6 rounded-[1.5rem] flex items-center justify-center gap-4 shadow-xl uppercase font-black tracking-widest text-lg"><i class="fas fa-plus-circle text-2xl"></i> Novo Pedido</button>
                 </div>
 
-                <!-- RESUMO DE SERVIÇOS (8 CARDS FIXOS) -->
-                <h3 class="text-gray-500 text-[10px] font-black uppercase mb-2 pl-1 tracking-widest">Resumo do Mês Atual</h3>
+                <!-- 7 CARDS RESUMO -->
+                <h3 class="text-gray-500 text-[10px] font-black uppercase mb-2 pl-1">Resumo de Ganhos</h3>
                 <div class="grid grid-cols-2 gap-3" id="resumo-grid">
-                    <div class="glass p-4 rounded-xl border-b border-gray-700 shadow-md text-center"><span class="text-[9px] text-blue-400 font-bold block uppercase tracking-tighter">Monetário 2.2%</span><span class="text-lg font-black text-white" id="r-cprod">R$ 0</span></div>
-                    <div class="glass p-4 rounded-xl border-b border-gray-700 shadow-md text-center"><span class="text-[9px] text-green-400 font-bold block uppercase tracking-tighter">Assistência</span><span class="text-lg font-black text-white" id="r-assist">R$ 0</span></div>
-                    <div class="glass p-4 rounded-xl border-b border-gray-700 shadow-md text-center"><span class="text-[9px] text-purple-400 font-bold block uppercase tracking-tighter">Vendido Imper.</span><span class="text-lg font-black text-white" id="r-imper">R$ 0</span></div>
-                    <div class="glass p-4 rounded-xl border-b border-gray-700 shadow-md text-center"><span class="text-[9px] text-purple-300 font-bold block uppercase tracking-tighter">Bônus Imper (40)</span><span class="text-lg font-black text-white" id="r-bonus-imper">R$ 0</span></div>
-                    <div class="glass p-4 rounded-xl border-b border-gray-700 shadow-md text-center"><span class="text-[9px] text-cyan-400 font-bold block uppercase tracking-tighter">Extra Lavagem</span><span class="text-lg font-black text-white" id="r-lav">R$ 0</span></div>
-                    <div class="glass p-4 rounded-xl border-b border-gray-700 shadow-md text-center"><span class="text-[9px] text-blue-400 font-bold block uppercase tracking-tighter">Extra Montagem</span><span class="text-lg font-black text-white" id="r-mon">R$ 0</span></div>
-                    <div class="glass p-4 rounded-xl border-b border-gray-700 shadow-md text-center"><span class="text-[9px] text-pink-400 font-bold block uppercase tracking-tighter">Extra Almofada</span><span class="text-lg font-black text-white" id="r-alm">R$ 0</span></div>
-                    <div class="glass p-4 rounded-xl col-span-2 text-center shadow-lg"><span class="text-[9px] text-yellow-400 font-bold block uppercase">Extra Pés de Guarda-roupa</span><span class="text-xl font-black text-white" id="r-pes">R$ 0</span></div>
+                    <div class="glass p-4 rounded-xl text-center"><span class="text-[9px] text-blue-400 font-bold block uppercase">Monetário 2.2%</span><span class="text-lg font-black text-white" id="r-cprod">R$ 0</span></div>
+                    <div class="glass p-4 rounded-xl text-center"><span class="text-[9px] text-green-400 font-bold block uppercase">Assistência 5%</span><span class="text-lg font-black text-white" id="r-assist">R$ 0</span></div>
+                    <div class="glass p-4 rounded-xl text-center"><span class="text-[9px] text-purple-300 font-bold block uppercase">Bônus Imper (40)</span><span class="text-lg font-black text-white" id="r-bonus-imper">R$ 0</span></div>
+                    <div class="glass p-4 rounded-xl text-center"><span class="text-[9px] text-cyan-400 font-bold block uppercase">Extra Lavagem (40)</span><span class="text-lg font-black text-white" id="r-lav">R$ 0</span></div>
+                    <div class="glass p-4 rounded-xl text-center"><span class="text-[9px] text-blue-400 font-bold block uppercase">Extra Montagem (10)</span><span class="text-lg font-black text-white" id="r-mon">R$ 0</span></div>
+                    <div class="glass p-4 rounded-xl text-center"><span class="text-[9px] text-pink-400 font-bold block uppercase">Extra Almofada (10)</span><span class="text-lg font-black text-white" id="r-alm">R$ 0</span></div>
+                    <div class="glass p-4 rounded-xl col-span-2 text-center"><span class="text-[9px] text-yellow-400 font-bold block uppercase">Extra Pés Guarda-roupa (7)</span><span class="text-xl font-black text-white" id="r-pes">R$ 0</span></div>
                 </div>
 
-                <div class="glass p-4 rounded-2xl mb-6 border border-gray-700/50 shadow-md">
-                    <p class="text-[10px] text-gray-500 font-bold uppercase mb-3 text-center tracking-widest">Consultar Fechamento por Data</p>
-                    <div class="grid grid-cols-2 gap-2 mb-3">
-                        <input type="date" id="date-start" class="input-box p-1 text-[11px] text-center font-bold">
-                        <input type="date" id="date-end" class="input-box p-1 text-[11px] text-center font-bold">
-                    </div>
-                    <button onclick="sys.generatePeriodReport()" class="w-full bg-blue-600/10 text-blue-400 border border-blue-500/20 py-2 rounded-lg font-black uppercase text-[9px] tracking-widest">Buscar Dados</button>
-                </div>
-
-                <h3 class="text-xs font-black text-gray-600 uppercase px-1 mb-2 tracking-widest">Histórico de Vendas</h3>
+                <h3 class="text-xs font-black text-gray-600 uppercase px-1 mb-2">Histórico de Vendas</h3>
                 <div id="list-sales" class="space-y-3 pb-10"></div>
             </div>
 
-            <!-- ABA NOVIDADES -->
+            <!-- ABA DONO DO DINHEIRO -->
             <div id="tab-news" class="hidden space-y-6">
                 <div class="text-center py-6">
-                    <i class="fas fa-star text-5xl text-amber-500 mb-2"></i>
-                    <h2 class="text-xl font-black uppercase tracking-widest">Novidades</h2>
-                    <p class="text-[9px] text-gray-500 uppercase">O que há de novo no Sales Force</p>
+                    <i class="fas fa-sack-dollar text-5xl text-amber-500 mb-2"></i>
+                    <h2 class="text-xl font-black uppercase tracking-widest">Dono do Dinheiro</h2>
                 </div>
-                <div class="px-2 space-y-4">
-                    <div class="bg-gradient-to-br from-blue-600 to-indigo-800 p-6 rounded-[2rem] shadow-xl border border-white/10">
-                        <h4 class="font-black uppercase text-white">Histórico Blindado</h4>
-                        <p class="text-xs text-blue-100 mt-1 opacity-80">Suas vendas agora carregam instantaneamente e estão seguras na nuvem.</p>
-                    </div>
-                    <div class="bg-gradient-to-br from-purple-600 to-pink-800 p-6 rounded-[2rem] shadow-xl border border-white/10">
-                        <h4 class="font-black uppercase text-white">Gestão de Unidades</h4>
-                        <p class="text-xs text-purple-100 mt-1 opacity-80">Gerentes agora podem cadastrar sua própria equipe e acompanhar metas.</p>
+                <div class="px-2">
+                    <div class="glass p-8 rounded-[2rem] text-center border border-amber-500/30">
+                        <p class="text-amber-200 font-bold italic">Liberado em breve</p>
                     </div>
                 </div>
             </div>
 
             <!-- RANKING -->
             <div id="tab-ranking" class="hidden space-y-6 text-center">
-                <div class="py-6"><i class="fas fa-medal text-5xl text-yellow-500 mb-2 font-black"></i><h2 class="text-xl font-black uppercase tracking-widest">Ranking da Loja</h2><p id="ranking-subtitle" class="text-[9px] text-gray-500 uppercase px-10"></p></div>
+                <div class="py-6"><i class="fas fa-medal text-5xl text-yellow-500 mb-2"></i><h2 class="text-xl font-black uppercase tracking-widest">Ranking da Loja</h2></div>
                 <div id="ranking-list" class="space-y-4 px-2 pb-20"></div>
             </div>
 
             <!-- METAS -->
             <div id="tab-metas" class="hidden space-y-6 text-center">
-                <div class="bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 p-8 rounded-[2.5rem] border border-purple-500/30 text-center shadow-2xl">
-                    <p class="text-purple-300 text-[10px] font-bold uppercase tracking-widest">Premiação Performance Estimada</p>
+                <div class="bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 p-8 rounded-[2.5rem] border border-purple-500/30 shadow-2xl">
+                    <p class="text-purple-300 text-[10px] font-bold uppercase">Bônus Performance Estimado</p>
                     <h2 class="text-4xl font-black my-2" id="m-bonus">R$ 0,00</h2>
-                    <span id="m-badge" class="bg-black/30 px-5 py-1 rounded-full text-[11px] font-black text-yellow-400 uppercase tracking-widest border border-yellow-500/30 font-black">Nível 0</span>
+                    <span id="m-badge" class="bg-black/30 px-5 py-1 rounded-full text-[11px] font-black text-yellow-400 border border-yellow-500/30">Nível 0</span>
                 </div>
                 <div id="goals-bars" class="space-y-5"></div>
             </div>
 
-            <!-- EQUIPE (SÓ GERENTE) -->
-            <div id="tab-team" class="hidden space-y-6">
-                <div class="glass p-6 rounded-[2rem] border border-gray-700 text-center shadow-md">
-                    <h3 class="font-black text-xs text-gray-300 uppercase mb-4 tracking-widest uppercase">Cadastrar Vendedor na Loja</h3>
+            <!-- EQUIPE E AJUSTES DO GERENTE (RESTAURADO) -->
+            <div id="tab-team" class="hidden space-y-6 pb-20">
+                <div class="glass p-6 rounded-[2rem] text-center">
+                    <h3 class="font-black text-xs text-gray-300 uppercase mb-4">Cadastrar Vendedor</h3>
                     <input type="text" id="mgr-new-user" class="input-box uppercase mb-2 font-black" placeholder="NOME">
                     <input type="password" id="mgr-new-pass" class="input-box mb-3 font-black" placeholder="SENHA">
-                    <button onclick="sys.mgrCreateSeller()" class="w-full bg-blue-600 font-black py-4 rounded-xl uppercase text-xs shadow-lg">Cadastrar</button>
+                    <button onclick="sys.mgrCreateSeller()" class="w-full bg-blue-600 font-black py-4 rounded-xl uppercase text-xs">Cadastrar</button>
                 </div>
+
                 <div class="glass p-6 rounded-[2rem] border-l-4 border-purple-500 shadow-xl">
-                    <h3 class="text-purple-500 font-black text-xs uppercase mb-4 text-center tracking-widest uppercase font-black">Configuração Gerencial (R$)</h3>
+                    <h3 class="text-purple-500 font-black text-xs uppercase mb-4 text-center">Configuração de Ganhos Equipe (R$)</h3>
                     <div class="grid grid-cols-2 gap-3 text-[10px] font-black uppercase text-gray-500">
                         <div>Lavagem<input type="number" id="mgr-val-lav" class="input-box text-center p-2 mt-1"></div>
                         <div>Imper<input type="number" id="mgr-val-imp" class="input-box text-center p-2 mt-1"></div>
@@ -176,109 +157,85 @@
                         <div>Almofada<input type="number" id="mgr-val-alm" class="input-box text-center p-2 mt-1"></div>
                         <div class="col-span-2">Pés G-Roupa<input type="number" id="mgr-val-pes" class="input-box text-center p-2 mt-1"></div>
                     </div>
-                    <div class="mt-4 pt-4 border-t border-gray-700 text-center"><label class="text-[9px] text-amber-500 font-black uppercase">Meta Global da Loja (R$)</label><input type="number" id="mgr-goal-p" class="input-box text-center font-black mt-1"></div>
-                    <button onclick="sys.mgrUpdateStoreSettings()" class="w-full bg-purple-600 font-black py-3 rounded-xl uppercase text-[10px] mt-4 shadow-lg">Salvar Config Loja</button>
+                    <div class="mt-4 pt-4 border-t border-gray-700 text-center">
+                        <label class="text-[9px] text-amber-500 font-black uppercase">Meta Bruta da Loja (R$)</label>
+                        <input type="number" id="mgr-goal-p" class="input-box text-center font-black mt-1">
+                    </div>
+                    <button onclick="sys.mgrUpdateStoreSettings()" class="w-full bg-purple-600 font-black py-3 rounded-xl uppercase text-[10px] mt-4">Salvar Ajustes da Loja</button>
                 </div>
-                <div id="mgr-team-list" class="space-y-3 pb-20"></div>
+
+                <div id="mgr-team-list" class="space-y-3"></div>
             </div>
 
-            <!-- AJUSTES (SÓ ADMIN) -->
+            <!-- AJUSTES ADMIN MASTER -->
             <div id="tab-config" class="hidden space-y-4">
-                <div class="glass p-6 rounded-[2rem] border-l-4 border-yellow-500 shadow-xl text-center">
-                    <h3 class="text-yellow-500 font-black text-xs uppercase mb-6 tracking-widest uppercase font-black text-left">Configuração das Metas Globais</h3>
-                    <div class="space-y-6" id="config-inputs">
-                        <div class="grid grid-cols-3 gap-2">
-                            <div class="col-span-3 text-[9px] font-black text-gray-500 uppercase border-b border-gray-700 pb-1 text-left">Nível 1 (0.6%)</div>
-                            <input type="number" id="c-n1-prod" class="input-box text-center p-2 text-xs font-black">
-                            <input type="number" id="c-n1-ass" class="input-box text-center p-2 text-xs font-black">
-                            <input type="number" id="c-n1-imp" class="input-box text-center p-2 text-xs font-black">
-                        </div>
-                        <div class="grid grid-cols-3 gap-2 border-t border-gray-700 pt-4">
-                            <div class="col-span-3 text-[9px] font-black text-gray-500 uppercase border-b border-gray-700 pb-1 text-left">Nível 2 (0.8%)</div>
-                            <input type="number" id="c-n2-prod" class="input-box text-center p-2 text-xs font-black">
-                            <input type="number" id="c-n2-ass" class="input-box text-center p-2 text-xs font-black">
-                            <input type="number" id="c-n2-imp" class="input-box text-center p-2 text-xs font-black">
-                        </div>
-                        <div class="grid grid-cols-3 gap-2 border-t border-gray-700 pt-4">
-                            <div class="col-span-3 text-[9px] font-black text-gray-500 uppercase border-b border-gray-700 pb-1 text-left">Nível 3 (1.1%)</div>
-                            <input type="number" id="c-n3-prod" class="input-box text-center p-2 text-xs font-black">
-                            <input type="number" id="c-n3-ass" class="input-box text-center p-2 text-xs font-black">
-                            <input type="number" id="c-n3-imp" class="input-box text-center p-2 text-xs font-black">
-                        </div>
-                    </div>
+                <div class="glass p-6 rounded-[2rem] border-l-4 border-yellow-500 shadow-xl">
+                    <h3 class="text-yellow-500 font-black text-xs uppercase mb-6">Metas Globais da Rede</h3>
+                    <div id="config-inputs-area" class="space-y-6"></div>
                 </div>
-                <button onclick="sys.saveConfig()" class="w-full bg-blue-600 font-black py-4 rounded-xl shadow-lg uppercase text-xs active:scale-95 transition">Salvar na Nuvem</button>
+                <button onclick="sys.saveConfig()" class="w-full bg-blue-600 font-black py-4 rounded-xl uppercase text-xs">Salvar Rede</button>
             </div>
 
             <!-- ADMIN MASTER -->
-            <div id="tab-admin" class="hidden space-y-6 pb-32 text-center">
+            <div id="tab-admin" class="hidden space-y-6 pb-32">
                 <div class="glass p-6 rounded-[2rem] shadow-xl border border-blue-500">
-                    <h3 class="font-black text-xs uppercase mb-4 text-blue-400 tracking-widest">Novo Gerente de Loja</h3>
-                    <input type="text" id="adm-new-mgr" class="input-box uppercase mb-2 font-bold" placeholder="NOME DO GERENTE">
+                    <h3 class="font-black text-xs uppercase mb-4 text-blue-400">Novo Acesso Unidade</h3>
+                    <input type="text" id="adm-new-name" class="input-box uppercase mb-2 font-bold" placeholder="USUÁRIO">
                     <input type="password" id="adm-new-pass" class="input-box mb-2 font-bold" placeholder="SENHA">
-                    <input type="text" id="adm-new-store" class="input-box uppercase mb-3 font-bold" placeholder="NOME DA LOJA">
-                    <button onclick="sys.adminCreateManager()" class="w-full bg-blue-600 font-black py-4 rounded-xl uppercase text-xs">Criar Unidade</button>
+                    <input type="text" id="adm-new-store" class="input-box uppercase mb-2 font-bold" placeholder="LOJA">
+                    <select id="adm-new-role" class="input-box mb-3 bg-gray-900 font-bold">
+                        <option value="manager">GERENTE DE LOJA</option>
+                        <option value="seller">VENDEDOR AVULSO</option>
+                    </select>
+                    <button onclick="sys.adminCreateUser()" class="w-full bg-blue-600 font-black py-4 rounded-xl uppercase text-xs">Criar Acesso</button>
                 </div>
-                <div class="glass p-6 rounded-[2rem] shadow-xl border border-green-500">
-                    <h3 class="font-black text-xs uppercase mb-4 text-green-400 tracking-widest">Novo Vendedor Avulso</h3>
-                    <input type="text" id="adm-new-seller" class="input-box uppercase mb-2 font-bold" placeholder="NOME DO VENDEDOR">
-                    <input type="password" id="adm-new-pass-seller" class="input-box mb-3 font-bold" placeholder="SENHA">
-                    <button onclick="sys.adminCreateSeller()" class="w-full bg-green-600 font-black py-3 rounded-xl uppercase text-xs font-black">Criar Avulso</button>
-                </div>
-                <h3 class="text-xs font-black text-blue-400 uppercase tracking-widest ml-1 mt-6 text-left">Mensalidades da Rede</h3>
                 <div id="adm-user-list" class="space-y-3"></div>
             </div>
         </main>
 
         <nav class="glass fixed bottom-0 w-full z-40 flex justify-around items-center h-[75px] border-t border-gray-800 text-gray-500 shadow-2xl">
-            <button onclick="sys.nav('home')" id="nav-home" class="flex-1 flex flex-col items-center gap-1 text-blue-500 transition-all active:scale-90 font-black"><i class="fas fa-home text-xl"></i><span class="text-[9px] font-black uppercase">Painel</span></button>
-            <button onclick="sys.nav('news')" id="nav-news" class="flex-1 flex flex-col items-center gap-1 transition-all active:scale-90 font-black"><i class="fas fa-star text-xl"></i><span class="text-[9px] font-black uppercase">Novidades</span></button>
-            <button onclick="sys.nav('ranking')" id="nav-ranking" class="flex-1 flex flex-col items-center gap-1 transition-all active:scale-90 font-black"><i class="fas fa-medal text-xl"></i><span class="text-[9px] font-black uppercase">Ranking</span></button>
-            <button onclick="sys.nav('metas')" id="nav-metas" class="flex-1 flex flex-col items-center gap-1 transition-all active:scale-90 font-black"><i class="fas fa-bullseye text-xl"></i><span class="text-[9px] font-black uppercase">Metas</span></button>
-            <button onclick="sys.nav('team')" id="nav-team" class="hidden flex-1 flex flex-col items-center gap-1 transition-all active:scale-90 font-black"><i class="fas fa-users-cog text-xl"></i><span class="text-[9px] font-black uppercase">Equipe</span></button>
-            <button onclick="sys.nav('config')" id="nav-config" class="hidden flex-1 flex flex-col items-center gap-1 transition-all active:scale-90 font-black"><i class="fas fa-sliders-h text-xl"></i><span class="text-[9px] font-black uppercase">Ajustes</span></button>
-            <button onclick="sys.nav('admin')" id="nav-admin" class="hidden flex-1 flex flex-col items-center gap-1 transition-all active:scale-90 font-black"><i class="fas fa-crown text-xl"></i><span class="text-[9px] font-black uppercase">Admin</span></button>
+            <button onclick="sys.nav('home')" id="nav-home" class="flex-1 flex flex-col items-center gap-1 text-blue-500 font-black transition-all"><i class="fas fa-home text-xl"></i><span class="text-[9px] uppercase">Painel</span></button>
+            <button onclick="sys.nav('news')" id="nav-news" class="flex-1 flex flex-col items-center gap-1 font-black transition-all"><i class="fas fa-sack-dollar text-xl"></i><span class="text-[9px] uppercase">Dono</span></button>
+            <button onclick="sys.nav('ranking')" id="nav-ranking" class="flex-1 flex flex-col items-center gap-1 font-black transition-all"><i class="fas fa-medal text-xl"></i><span class="text-[9px] uppercase">Ranking</span></button>
+            <button onclick="sys.nav('metas')" id="nav-metas" class="flex-1 flex flex-col items-center gap-1 font-black transition-all"><i class="fas fa-bullseye text-xl"></i><span class="text-[9px] uppercase">Metas</span></button>
+            <button onclick="sys.nav('team')" id="nav-team" class="hidden flex-1 flex flex-col items-center gap-1 font-black transition-all"><i class="fas fa-users-cog text-xl"></i><span class="text-[9px] uppercase">Equipe</span></button>
+            <button onclick="sys.nav('config')" id="nav-config" class="hidden flex-1 flex flex-col items-center gap-1 font-black transition-all"><i class="fas fa-sliders-h text-xl"></i><span class="text-[9px] uppercase">Ajustes</span></button>
+            <button onclick="sys.nav('admin')" id="nav-admin" class="hidden flex-1 flex flex-col items-center gap-1 font-black transition-all"><i class="fas fa-crown text-xl"></i><span class="text-[9px] uppercase">Admin</span></button>
         </nav>
     </div>
 
-    <!-- MODAIS -->
+    <!-- MODAL DETALHE PEDIDO -->
     <div id="modal-detalhe" class="fixed inset-0 z-[110] hidden items-center justify-center bg-black/90 p-4 backdrop-blur-sm">
-        <div class="bg-[#1e293b] w-full max-w-sm rounded-[2rem] border border-gray-700 shadow-2xl overflow-hidden text-center font-black uppercase">
+        <div class="bg-[#1e293b] w-full max-w-sm rounded-[2rem] border border-gray-700 shadow-2xl overflow-hidden text-center uppercase font-black">
             <div id="det-corpo" class="p-8 text-sm"></div>
             <div class="p-4 bg-gray-900 flex gap-2 border-t border-gray-800">
-                <button id="det-btn-del" class="flex-1 bg-red-600/10 text-red-500 font-bold py-4 rounded-xl border border-red-500/20 uppercase text-[10px] shadow-lg">Excluir Pedido</button>
-                <button onclick="sys.closeModal('modal-detalhe')" class="flex-1 bg-gray-700 font-bold py-4 rounded-xl uppercase text-[10px] tracking-widest text-white shadow-lg">Voltar</button>
+                <button id="det-btn-del" class="flex-1 bg-red-600/10 text-red-500 font-bold py-4 rounded-xl border border-red-500/20 text-[10px]">Excluir</button>
+                <button onclick="sys.closeModal('modal-detalhe')" class="flex-1 bg-gray-700 font-bold py-4 rounded-xl text-[10px] text-white">Voltar</button>
             </div>
         </div>
     </div>
 
+    <!-- MODAL NOVO PEDIDO -->
     <div id="modal-pedido" class="fixed inset-0 z-[100] hidden items-end justify-center bg-black/80 backdrop-blur-sm text-center font-black">
-        <div class="bg-[#1e293b] w-full max-w-md rounded-t-[2.5rem] p-8 modal-up border-t border-blue-500/30 shadow-2xl">
-            <div class="flex justify-between items-center mb-6"><h2 class="uppercase font-black text-blue-400 tracking-tighter text-lg uppercase">Novo Pedido</h2><button onclick="sys.closeModal('modal-pedido')"><i class="fas fa-times"></i></button></div>
+        <div class="bg-[#1e293b] w-full max-w-md rounded-t-[2.5rem] p-8 modal-up border-t border-blue-500/30">
+            <div class="flex justify-between items-center mb-6"><h2 class="uppercase text-blue-400 text-lg">Novo Pedido</h2><button onclick="sys.closeModal('modal-pedido')"><i class="fas fa-times"></i></button></div>
             <div class="space-y-5">
-                <input type="tel" id="i-ord" placeholder="Nº DO PEDIDO" class="input-box text-center font-bold text-xl border-blue-500/30 shadow-inner">
-                <div class="grid grid-cols-3 gap-2 uppercase">
+                <input type="tel" id="i-ord" placeholder="Nº DO PEDIDO" class="input-box text-center font-bold text-xl border-blue-500/30">
+                <div class="grid grid-cols-3 gap-2">
                     <div><label class="text-[9px] font-black text-gray-500">Venda</label><input type="number" id="i-prod" class="input-box text-center p-2 font-black" oninput="sys.calc()"></div>
                     <div><label class="text-[9px] font-black text-gray-500">Assis</label><input type="number" id="i-ass" class="input-box text-center p-2 font-black" oninput="sys.calc()"></div>
                     <div><label class="text-[9px] font-black text-gray-500">Imper</label><input type="number" id="i-imp" class="input-box text-center p-2 font-black" oninput="sys.calc()"></div>
                 </div>
-                <div class="grid grid-cols-2 gap-2 text-[10px] bg-black/20 p-5 rounded-2xl border border-gray-700 font-black uppercase text-gray-300 shadow-inner">
-                    <div class="flex justify-between items-center tracking-tighter">Lavagem (40)<input id="q-lav" type="number" class="w-8 bg-blue-600 rounded text-center" oninput="sys.calc()"></div>
-                    <div class="flex justify-between items-center tracking-tighter">Imper (40)<input id="q-imp" type="number" class="w-8 bg-blue-600 rounded text-center" oninput="sys.calc()"></div>
-                    <div class="flex justify-between items-center tracking-tighter">Montagem (10)<input id="q-mon" type="number" class="w-8 bg-blue-600 rounded text-center" oninput="sys.calc()"></div>
-                    <div class="flex justify-between items-center tracking-tighter">Almofada (10)<input id="q-alm" type="number" class="w-8 bg-blue-600 rounded text-center" oninput="sys.calc()"></div>
-                    <div class="flex justify-between items-center col-span-2 pt-2 border-t border-gray-700 tracking-tighter">Pés G-Roupa (7)<input id="q-pes" type="number" class="w-8 bg-blue-600 rounded text-center" oninput="sys.calc()"></div>
+                <div class="grid grid-cols-2 gap-2 text-[10px] bg-black/20 p-5 rounded-2xl border border-gray-700 font-black">
+                    <div class="flex justify-between items-center">Lavagem (40)<input id="q-lav" type="number" class="w-8 bg-blue-600 rounded text-center" oninput="sys.calc()"></div>
+                    <div class="flex justify-between items-center">Imper (40)<input id="q-imp" type="number" class="w-8 bg-blue-600 rounded text-center" oninput="sys.calc()"></div>
+                    <div class="flex justify-between items-center">Montagem (10)<input id="q-mon" type="number" class="w-8 bg-blue-600 rounded text-center" oninput="sys.calc()"></div>
+                    <div class="flex justify-between items-center">Almofada (10)<input id="q-alm" type="number" class="w-8 bg-blue-600 rounded text-center" oninput="sys.calc()"></div>
+                    <div class="flex justify-between items-center col-span-2 pt-2 border-t border-gray-700 text-center">Pés G-Roupa (7)<input id="q-pes" type="number" class="w-8 bg-blue-600 rounded text-center" oninput="sys.calc()"></div>
                 </div>
                 <div class="flex justify-between font-black text-green-400 pt-2 uppercase text-[10px]"><span>Previsão Comissão:</span><span id="preview">R$ 0,00</span></div>
-                <button onclick="sys.saveOrder()" class="w-full bg-blue-600 py-5 rounded-xl font-black uppercase shadow-lg tracking-widest transition active:scale-95">Salvar na Nuvem</button>
+                <button onclick="sys.saveOrder()" id="btn-save" class="w-full bg-blue-600 py-5 rounded-xl font-black uppercase shadow-lg transition active:scale-95">Salvar na Nuvem</button>
             </div>
-        </div>
-    </div>
-
-    <div id="modal-periodo" class="fixed inset-0 z-[120] hidden items-center justify-center bg-black/95 p-4 backdrop-blur-sm text-center font-black uppercase">
-        <div class="bg-[#1e293b] w-full max-w-sm rounded-[2.5rem] border border-blue-500/30 overflow-hidden shadow-2xl">
-            <div id="period-details-body" class="p-8 space-y-4 text-sm"></div>
-            <button onclick="sys.closeModal('modal-periodo')" class="text-gray-500 py-6 font-black uppercase tracking-widest underline">Fechar Relatório</button>
         </div>
     </div>
 
@@ -298,7 +255,7 @@
             user: null, allSales: [], config: {}, storeData: {},
             
             async init() {
-                setTimeout(() => { if(!this.user) { document.getElementById('loading').style.display='none'; document.getElementById('view-login').classList.remove('hidden'); } }, 4000);
+                setTimeout(() => { if(!this.user) { document.getElementById('loading').style.display='none'; document.getElementById('view-login').classList.remove('hidden'); } }, 3000);
             },
 
             async login() {
@@ -307,19 +264,19 @@
                 if(!u || !p) return;
                 document.getElementById('loading').style.display='flex';
                 try {
-                    if (u === "admin" && p === "master77") {
-                        await db.collection('users').doc(u).set({ p:"master77", r:"admin", b:false, d:Date.now(), exp:Date.now()+(3650*86400000), store: "MATRIZ MASTER" });
-                    }
                     const uDoc = await db.collection('users').doc(u).get();
                     if(!uDoc.exists || uDoc.data().p !== p) throw new Error("Acesso negado.");
                     const data = uDoc.data();
-                    if(data.b) throw new Error("Bloqueado.");
-                    if(data.r !== 'admin' && Date.now() > data.exp) throw new Error("Acesso expirado.");
-
+                    if(data.b) throw new Error("Usuário Bloqueado.");
+                    if(data.r !== 'admin' && Date.now() > data.exp) throw new Error("Acesso Expirado.");
+                    
                     this.user = { id: u, ...data };
+                    await db.collection('users').doc(u).update({ lastSeen: Date.now() });
+                    
                     document.getElementById('u-name').innerText = u;
                     if(data.r === 'admin') { document.getElementById('nav-admin').classList.remove('hidden'); document.getElementById('nav-config').classList.remove('hidden'); }
                     if(data.r === 'manager') document.getElementById('nav-team').classList.remove('hidden');
+
                     await this.loadInitialData();
                     document.getElementById('view-login').classList.add('hidden');
                     document.getElementById('view-app').classList.remove('hidden');
@@ -331,192 +288,182 @@
             async loadInitialData() {
                 const confDoc = await db.collection('settings').doc('global').get();
                 this.config = confDoc.exists ? confDoc.data() : { n1:{p:70000,a:720,i:720}, n2:{p:80000,a:2200,i:2160}, n3:{p:96000,a:3000,i:3000} };
-
+                
                 let query = db.collection('sales');
                 if(this.user.r === 'seller') query = query.where('seller', '==', this.user.id);
                 if(this.user.r === 'manager') query = query.where('store', '==', this.user.store);
+                
                 const snap = await query.get();
                 this.allSales = snap.docs.map(d => ({id:d.id, ...d.data()})).sort((a,b) => b.date.localeCompare(a.date));
 
                 if(this.user.store) {
-                    const storeDoc = await db.collection('stores').doc(this.user.store).get();
-                    this.storeData = storeDoc.exists ? storeDoc.data() : { goal: 0, valLav: 0, valImp: 0, valMon: 0, valAlm: 0, valPes: 0 };
+                    const sDoc = await db.collection('stores').doc(this.user.store).get();
+                    this.storeData = sDoc.exists ? sDoc.data() : { goal:0, valLav:0, valImp:0, valMon:0, valAlm:0, valPes:0 };
                 }
             },
 
             renderHome() {
-                const mesStr = new Date().toISOString().slice(0,7);
-                const filtradosMeus = this.allSales.filter(s => s.date.startsWith(mesStr) && s.seller === this.user.id);
-                const filtradosLoja = this.allSales.filter(s => s.date.startsWith(mesStr));
+                const mes = new Date().toISOString().slice(0,7);
+                const filtradosMeus = this.allSales.filter(s => s.date.startsWith(mes) && s.seller === this.user.id);
+                const filtradosLoja = this.allSales.filter(s => s.date.startsWith(mes));
 
-                let t = {p:0, a:0, i:0, f:0, lav:0, mon:0, pes:0, alm:0, impBonus:0};
+                let t = {p:0, a:0, i:0, lav:0, mon:0, pes:0, alm:0, impBonus:0};
                 filtradosMeus.forEach(s => {
-                    t.p += (s.v.p || 0); t.a += (s.v.a || 0); t.i += (s.v.i || 0); t.f += (s.bonus || 0);
+                    t.p += (s.v.p || 0); t.a += (s.v.a || 0); t.i += (s.v.i || 0);
                     t.lav += (s.q?.lav||0)*40; t.mon += (s.q?.mon||0)*10;
                     t.pes += (s.q?.pes||0)*7; t.alm += (s.q?.alm||0)*10; t.impBonus += (s.q?.imp||0)*40;
                 });
 
+                // Lógica Ganho Gerente
                 if(this.user.r === 'manager') {
                     let lT = {lav:0, imp:0, mon:0, alm:0, pes:0};
-                    filtradosLoja.forEach(s => { lT.lav += (s.q?.lav||0); lT.imp += (s.q?.imp||0); lT.mon += (s.q?.mon||0); lT.alm += (s.q?.alm||0); lT.pes += (s.q?.pes||0); });
-                    const teamGain = (lT.lav * (this.storeData.valLav || 0)) + (lT.imp * (this.storeData.valImp || 0)) + (lT.mon * (this.storeData.valMon || 0)) + (lT.alm * (this.storeData.valAlm || 0)) + (lT.pes * (this.storeData.valPes || 0));
-                    document.getElementById('manager-profit-card').classList.remove('hidden');
-                    document.getElementById('r-manager-team-profit').innerText = this.fmt(teamGain);
+                    filtradosLoja.forEach(s => { 
+                        lT.lav += (s.q?.lav||0); lT.imp += (s.q?.imp||0); 
+                        lT.mon += (s.q?.mon||0); lT.alm += (s.q?.alm||0); lT.pes += (s.q?.pes||0); 
+                    });
+                    const teamProfit = (lT.lav * (this.storeData.valLav||0)) + (lT.imp * (this.storeData.valImp||0)) + (lT.mon * (this.storeData.valMon||0)) + (lT.alm * (this.storeData.valAlm||0)) + (lT.pes * (this.storeData.valPes||0));
+                    document.getElementById('mgr-profit-card').classList.remove('hidden');
+                    document.getElementById('r-mgr-team-profit').innerText = this.fmt(teamProfit);
                 }
 
+                // Cards do Painel
                 document.getElementById('d-total').innerText = this.fmt(t.p);
                 document.getElementById('d-my-profit').innerText = this.fmt(t.p * 0.022);
-                
                 document.getElementById('r-cprod').innerText = this.fmt(t.p * 0.022);
                 document.getElementById('r-assist').innerText = this.fmt(t.a * 0.05);
-                document.getElementById('r-imper').innerText = this.fmt(t.i);
                 document.getElementById('r-bonus-imper').innerText = this.fmt(t.impBonus);
                 document.getElementById('r-lav').innerText = this.fmt(t.lav);
                 document.getElementById('r-mon').innerText = this.fmt(t.mon);
                 document.getElementById('r-pes').innerText = this.fmt(t.pes);
                 document.getElementById('r-alm').innerText = this.fmt(t.alm);
 
-                const C = this.config;
-                const pV = Number(t.p); const aV = Number(t.a); const iV = Number(t.i);
-                let pct = (pV>=Number(C.n3.p) && aV>=Number(C.n3.a) && iV>=Number(C.n3.i)) ? 0.011 : (pV>=Number(C.n2.p) && aV>=Number(C.n2.a) && iV>=Number(C.n2.i)) ? 0.008 : (pV>=Number(C.n1.p) && aV>=Number(C.n1.a) && iV>=Number(C.n1.i)) ? 0.006 : 0;
-                
-                document.getElementById('m-bonus').innerText = this.fmt(pV * pct);
-                document.getElementById('m-badge').innerText = pct === 0.011 ? "Nível 3 🔥" : pct === 0.008 ? "Nível 2 🥈" : pct === 0.006 ? "Nível 1 🥉" : "Nível 0";
-
-                document.getElementById('goals-bars').innerHTML = `
-                    ${this.renderBar("Produto Individual", pV, Number(C.n2.p), "blue")}
-                    ${this.renderBar("Assistência Individual", aV, Number(C.n2.a), "green")}
-                    ${this.renderBar("Impermeab. Individual", iV, Number(C.n2.i), "purple")}
-                `;
-
-                if(this.user.store && this.user.r !== 'admin') {
-                    let totalVendaLoja = filtradosLoja.reduce((acc, curr) => acc + (curr.v.p || 0), 0);
-                    const goal = this.storeData.goal || 0;
-                    const pctL = goal > 0 ? Math.min((totalVendaLoja/goal)*100, 100).toFixed(1) : 0;
+                // Meta da Loja
+                if(this.user.store && this.storeData.goal > 0) {
+                    const totalVendidoLoja = filtradosLoja.reduce((acc, curr) => acc + (curr.v.p || 0), 0);
+                    const pctL = Math.min((totalVendidoLoja / this.storeData.goal) * 100, 100).toFixed(1);
                     document.getElementById('store-goal-area').classList.remove('hidden');
                     document.getElementById('store-bar-fill').style.width = pctL + '%';
                     document.getElementById('store-goal-pct').innerText = pctL + '%';
-                    document.getElementById('store-goal-text').innerText = `LOJA: ${this.user.store} | VENDIDO R$ ${totalVendaLoja.toLocaleString()}`;
+                    document.getElementById('store-goal-text').innerText = `LOJA: ${this.user.store} | R$ ${totalVendidoLoja.toLocaleString()}`;
                 }
+
+                const C = this.config;
+                let pct = (t.p>=C.n3.p && t.a>=C.n3.a && t.i>=C.n3.i) ? 0.011 : (t.p>=C.n2.p && t.a>=C.n2.a && t.i>=C.n2.i) ? 0.008 : (t.p>=C.n1.p && t.a>=C.n1.a && t.i>=C.n1.i) ? 0.006 : 0;
+                document.getElementById('m-bonus').innerText = this.fmt(t.p * pct);
+                document.getElementById('m-badge').innerText = pct > 0 ? `NÍVEL ATINGIDO!` : "NÍVEL 0";
+                document.getElementById('goals-bars').innerHTML = `${this.renderBar("Produto", t.p, C.n2.p, "blue")}${this.renderBar("Assistência", t.a, C.n2.a, "green")}${this.renderBar("Impermeabilização", t.i, C.n2.i, "purple")}`;
 
                 const list = document.getElementById('list-sales'); list.innerHTML = "";
                 filtradosMeus.forEach(s => {
-                    list.innerHTML += `<div onclick="sys.verDetalhe('${s.id}')" class="glass p-4 mb-2 rounded-xl flex justify-between items-center active:scale-95 transition cursor-pointer shadow-md"><div><span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">${new Date(s.date).toLocaleDateString()}</span><div class="font-black text-sm text-white uppercase tracking-tighter">Pedido #${s.order}</div></div><div class="text-right text-green-400 font-black tracking-tighter">+ ${this.fmt(s.preview)}</div></div>`;
+                    list.innerHTML += `<div onclick="sys.verDetalhe('${s.id}')" class="glass p-4 mb-2 rounded-xl flex justify-between items-center shadow-md active:scale-95 transition"><div><span class="text-[10px] text-gray-500 font-bold">${new Date(s.date).toLocaleDateString()}</span><div class="font-black text-sm text-white">Pedido #${s.order}</div></div><div class="text-right text-green-400 font-black">+ ${this.fmt(s.preview)}</div></div>`;
                 });
             },
 
             verDetalhe(id) {
                 const s = this.allSales.find(x => x.id === id);
                 if(!s) return;
-                document.getElementById('det-corpo').innerHTML = `<h3 class="font-black text-center text-xl mb-6 text-white uppercase tracking-widest">Pedido #${s.order}</h3><div class="space-y-4 font-bold uppercase text-[10px] text-gray-400"><div class="flex justify-between border-b border-gray-800 pb-1 text-gray-300"><span>Venda Prod:</span><b class="text-white font-black">${this.fmt(s.v.p)}</b></div><div class="flex justify-between border-b border-gray-800 pb-1 text-gray-300"><span>Venda Assis:</span><b class="text-white font-black">${this.fmt(s.v.a)}</b></div><div class="bg-black/30 p-4 rounded-xl mt-4 grid grid-cols-2 gap-3 text-center font-black text-gray-300 uppercase"><span>Lav: ${s.q?.lav||0}</span><span>Mon: ${s.q?.mon||0}</span><span>Alm: ${s.q?.alm||0}</span><span>Pés G-Roupa: ${s.q?.pes||0}</span><span class="col-span-2 text-purple-300 border-t border-gray-700 mt-2 pt-2 uppercase font-black">Extra Imper: ${s.q?.imp||0}</span></div><div class="text-center pt-8 text-3xl font-black text-green-400 tracking-tighter font-black">${this.fmt(s.preview)}</div></div>`;
+                document.getElementById('det-corpo').innerHTML = `<h3 class="font-black text-xl mb-4 text-blue-400">Pedido #${s.order}</h3><div class="space-y-2 text-left text-[11px] border-b border-gray-700 pb-4 mb-4 font-black"><div class="flex justify-between"><span>Venda Produto:</span><b>${this.fmt(s.v.p)}</b></div><div class="flex justify-between"><span>Venda Assistência:</span><b>${this.fmt(s.v.a)}</b></div><div class="flex justify-between"><span>Venda Imper:</span><b>${this.fmt(s.v.i||0)}</b></div></div><div class="grid grid-cols-2 gap-2 text-[10px] text-gray-400 bg-black/20 p-4 rounded-xl mb-4 font-black"><span>Lavagem: ${s.q?.lav||0}</span><span>Imper Extras: ${s.q?.imp||0}</span><span>Montagem: ${s.q?.mon||0}</span><span>Almofada: ${s.q?.alm||0}</span><span class="col-span-2 pt-2 border-t border-gray-800">Pés: ${s.q?.pes||0}</span></div><p class="text-green-400 text-3xl font-black">${this.fmt(s.preview)}</p>`;
                 document.getElementById('det-btn-del').onclick = () => this.delOrder(id);
                 this.openModal('modal-detalhe');
             },
 
-            async delOrder(id) {
-                if(confirm("Excluir definitivamente?")) {
-                    document.getElementById('loading').style.display='flex';
-                    await db.collection('sales').doc(id).delete();
-                    await this.loadInitialData();
-                    this.closeModal('modal-detalhe');
-                    document.getElementById('loading').style.display='none';
-                    this.renderHome();
-                }
+            async saveOrder() {
+                const ord = document.getElementById('i-ord').value;
+                if(!ord) { alert("Nº do pedido!"); return; }
+                const c = this.calc();
+                document.getElementById('loading').style.display='flex';
+                try {
+                    await db.collection('sales').add({ seller: this.user.id, store: this.user.store, order: ord, v: {p:parseFloat(c.p)||0, a:parseFloat(c.a)||0, i:parseFloat(c.i)||0}, bonus: c.f, preview: c.t, date: new Date().toISOString(), q: {lav:this.g('q-lav'), imp:this.g('q-imp'), mon:this.g('q-mon'), alm:this.g('q-alm'), pes:this.g('q-pes')} });
+                    await db.collection('users').doc(this.user.id).update({ lastSeen: Date.now() });
+                    ["i-ord","i-prod","i-ass","i-imp","q-lav","q-imp","q-mon","q-alm","q-pes"].forEach(id => document.getElementById(id).value = "");
+                    document.getElementById('preview').innerText = "R$ 0,00";
+                    await this.loadInitialData(); this.closeModal('modal-pedido'); this.renderHome();
+                    alert("Salvo com sucesso!");
+                } catch(e) { alert("Erro ao salvar."); }
+                document.getElementById('loading').style.display='none';
             },
 
-            async adminAddMonths(id) {
-                const m = parseInt(document.getElementById(`months-${id}`).value);
-                const uDoc = await db.collection('users').doc(id).get();
-                const base = uDoc.data().exp > Date.now() ? uDoc.data().exp : Date.now();
-                await db.collection('users').doc(id).update({ exp: base + (m * 30 * 86400000) });
-                this.renderAdmin();
-            },
-
-            async adminToggle(id) {
-                const uDoc = await db.collection('users').doc(id).get();
-                await db.collection('users').doc(id).update({ b: !uDoc.data().b });
-                if(this.user.r === 'admin') this.renderAdmin(); else this.renderTeam();
-            },
-
-            async adminCreateManager() {
-                const n = document.getElementById('adm-new-mgr').value.toLowerCase().trim();
-                const p = document.getElementById('adm-new-pass').value;
-                const s = document.getElementById('adm-new-store').value.toUpperCase().trim();
-                if(!n || !p || !s) return;
-                await db.collection('users').doc(n).set({ p, r:'manager', b:false, d:Date.now(), exp: Date.now()+(365*86400000), store: s });
-                alert("Gerente Criado!"); this.renderAdmin();
-            },
-
-            async adminCreateSeller() {
-                const n = document.getElementById('adm-new-seller').value.toLowerCase().trim();
-                const p = document.getElementById('adm-new-pass-seller').value;
-                if(!n || !p) return;
-                await db.collection('users').doc(n).set({ p, r:'seller', b:false, d:Date.now(), exp: Date.now()+(7*86400000), store: "AVULSO" });
-                alert("Avulso Criado!"); this.renderAdmin();
+            // AJUSTES DO GERENTE
+            async mgrUpdateStoreSettings() {
+                const d = { 
+                    goal: parseFloat(document.getElementById('mgr-goal-p').value)||0, 
+                    valLav: parseFloat(document.getElementById('mgr-val-lav').value)||0, 
+                    valImp: parseFloat(document.getElementById('mgr-val-imp').value)||0, 
+                    valMon: parseFloat(document.getElementById('mgr-val-mon').value)||0, 
+                    valAlm: parseFloat(document.getElementById('mgr-val-alm').value)||0, 
+                    valPes: parseFloat(document.getElementById('mgr-val-pes').value)||0 
+                };
+                await db.collection('stores').doc(this.user.store).set(d);
+                this.storeData = d; alert("Configurações da Loja Salvas!"); this.renderHome();
             },
 
             async renderAdmin() {
                 const snap = await db.collection('users').get();
                 const list = document.getElementById('adm-user-list'); list.innerHTML = "";
                 snap.forEach(doc => {
-                    const u = doc.data(); if(u.id==='admin') return;
+                    const u = doc.data(); if(doc.id === 'admin') return;
                     const dias = Math.max(0, Math.ceil((u.exp - Date.now()) / 86400000));
-                    list.innerHTML += `<div class="glass p-4 rounded-2xl mb-3 border border-gray-700 shadow-xl text-left"><div class="flex justify-between items-center mb-3"><div><span class="font-black uppercase text-sm">${doc.id}</span> <span class="text-[9px] text-gray-500">(${u.r})</span> ${u.b?'🔴':'🟢'}</div><span class="text-blue-400 font-black text-xs">${dias} Dias</span></div><div class="grid grid-cols-2 gap-2"><select id="months-${doc.id}" class="input-box p-1 text-xs bg-gray-900 border-gray-600 font-black"><option value="1">+ 1 Mês</option><option value="3">+ 3 Meses</option><option value="6">+ 6 Meses</option><option value="12">+ 1 Ano</option></select><button onclick="sys.adminAddMonths('${doc.id}')" class="bg-green-600 rounded-lg text-[9px] font-black uppercase py-1 shadow-lg">Add Crédito</button><button onclick="sys.adminToggle('${doc.id}')" class="bg-gray-700 rounded-lg text-[9px] font-black uppercase py-2 tracking-tighter">${u.b?'Ativar':'Bloquear'}</button><button onclick="sys.adminDelUser('${doc.id}')" class="bg-red-900/30 text-red-500 rounded-lg text-[9px] font-black uppercase py-2 tracking-tighter">Apagar</button></div></div>`;
+                    const last = u.lastSeen ? new Date(u.lastSeen).toLocaleDateString() + " às " + new Date(u.lastSeen).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : "Nunca";
+                    list.innerHTML += `<div class="glass p-4 rounded-2xl mb-3 text-left font-black"><div class="flex justify-between items-center mb-1"><span class="uppercase text-sm">${doc.id}</span><span class="text-blue-400 text-xs">${dias} Dias</span></div><p class="text-[9px] text-gray-500 uppercase">Loja: <span class="text-white">${u.store}</span> | Visto: <span class="text-green-400">${last}</span></p><div class="flex gap-2 my-2 bg-black/30 p-2 rounded-xl border border-gray-700"><input type="text" id="tr-${doc.id}" class="flex-1 bg-transparent text-[10px] outline-none" placeholder="NOVA LOJA"><button onclick="sys.adminTransfer('${doc.id}')" class="bg-blue-600 px-3 py-1 rounded-lg text-[8px]">TRANSFERIR</button></div><div class="flex gap-2"><select id="mo-${doc.id}" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg text-[10px] p-2"><option value="1">+1 Mês</option><option value="3">+3 Meses</option><option value="12">+1 Ano</option></select><button onclick="sys.adminRenovar('${doc.id}')" class="bg-green-600 px-4 rounded-lg text-[9px]">RENOVAR</button><button onclick="sys.adminToggle('${doc.id}')" class="bg-gray-700 px-3 rounded-lg text-[9px]">${u.b?'Ativar':'Bloquear'}</button><button onclick="sys.adminDel('${doc.id}')" class="bg-red-900/40 px-3 rounded-lg text-[9px]"><i class="fas fa-trash"></i></button></div></div>`;
                 });
             },
 
-            async adminDelUser(id) { if(confirm("Apagar?")) { await db.collection('users').doc(id).delete(); this.renderAdmin(); } },
+            async adminTransfer(id) {
+                const s = document.getElementById(`tr-${id}`).value.toUpperCase().trim();
+                if(!s) return;
+                await db.collection('users').doc(id).update({ store: s }); alert("Transferido!"); this.renderAdmin();
+            },
 
-            async mgrUpdateStoreSettings() {
-                const d = { goal: parseFloat(document.getElementById('mgr-goal-p').value)||0, valLav: parseFloat(document.getElementById('mgr-val-lav').value)||0, valImp: parseFloat(document.getElementById('mgr-val-imp').value)||0, valMon: parseFloat(document.getElementById('mgr-val-mon').value)||0, valAlm: parseFloat(document.getElementById('mgr-val-alm').value)||0, valPes: parseFloat(document.getElementById('mgr-val-pes').value)||0 };
-                await db.collection('stores').doc(this.user.store).set(d); this.storeData = d; alert("Salvo!"); this.renderHome();
+            async adminRenovar(id) {
+                const m = parseInt(document.getElementById(`mo-${id}`).value);
+                const doc = await db.collection('users').doc(id).get();
+                const exp = Math.max(Date.now(), doc.data().exp) + (m * 30 * 86400000);
+                await db.collection('users').doc(id).update({ exp: exp }); this.renderAdmin();
+            },
+
+            async adminToggle(id) { const doc = await db.collection('users').doc(id).get(); await db.collection('users').doc(id).update({ b: !doc.data().b }); this.renderAdmin(); },
+            async adminDel(id) { if(confirm("Apagar?")) { await db.collection('users').doc(id).delete(); this.renderAdmin(); } },
+            async adminCreateUser() {
+                const n = document.getElementById('adm-new-name').value.toLowerCase().trim();
+                const p = document.getElementById('adm-new-pass').value;
+                const s = document.getElementById('adm-new-store').value.toUpperCase().trim();
+                const r = document.getElementById('adm-new-role').value;
+                if(!n||!p||!s) return;
+                await db.collection('users').doc(n).set({ p, r, store: s, exp: Date.now()+(30*86400000), b: false, lastSeen: 0 });
+                alert("Criado!"); this.renderAdmin();
             },
 
             async mgrCreateSeller() {
                 const n = document.getElementById('mgr-new-user').value.toLowerCase().trim();
                 const p = document.getElementById('mgr-new-pass').value;
-                if(!n || !p) return;
-                await db.collection('users').doc(n).set({ p, r:'seller', b:false, d:Date.now(), exp: Date.now()+(30*86400000), store: this.user.store, manager: this.user.id });
-                alert("Vendedor criado!"); this.renderTeam();
+                if(!n||!p) return;
+                await db.collection('users').doc(n).set({ p, r:'seller', store: this.user.store, exp: Date.now()+(30*86400000), b: false, lastSeen: 0 });
+                alert("Vendedor Criado!"); this.renderTeam();
             },
 
             async renderTeam() {
                 const list = document.getElementById('mgr-team-list'); list.innerHTML = "";
-                const snapUsers = await db.collection('users').where('store', '==', this.user.store).where('r', '==', 'seller').get();
-                snapUsers.forEach(doc => {
-                    list.innerHTML += `<div class="glass p-3 mb-2 rounded-xl flex justify-between items-center text-xs"><div><p class="font-black uppercase">${doc.id}</p></div><button onclick="sys.adminToggle('${doc.id}')" class="bg-gray-800 p-2 rounded">${doc.data().b?'🔴':'🟢'}</button></div>`;
-                });
+                const snap = await db.collection('users').where('store', '==', this.user.store).get();
+                snap.forEach(doc => { if(doc.id !== this.user.id) list.innerHTML += `<div class="glass p-3 rounded-xl flex justify-between items-center"><span class="uppercase font-black text-xs">${doc.id}</span><button onclick="sys.adminToggle('${doc.id}')" class="text-[10px]">${doc.data().b ? '🔴':'🟢'}</button></div>`; });
             },
 
-            async renderRanking() {
-                const mes = new Date().toISOString().slice(0,7);
-                const rankingData = {};
-                this.allSales.forEach(s => { if(s.date.startsWith(mes)) rankingData[s.seller] = (rankingData[s.seller] || 0) + (s.v.p || 0); });
-                const sorted = Object.entries(rankingData).sort((a,b) => b[1] - a[1]);
-                const list = document.getElementById('ranking-list'); list.innerHTML = "";
-                sorted.forEach((v, i) => {
-                    const isMe = v[0] === this.user.id;
-                    const canSee = (this.user.r === 'manager' || this.user.r === 'admin' || isMe);
-                    list.innerHTML += `<div class="glass p-5 rounded-[1.5rem] flex justify-between items-center border ${isMe ? 'border-blue-500 shadow-lg':'border-gray-700 opacity-60'}">
-                        <span class="font-black text-blue-400">${i+1}º</span>
-                        <span class="font-black text-xs uppercase tracking-tighter">${canSee ? v[0] : 'VENDEDOR ***'}</span>
-                        <span class="font-black text-[10px] text-gray-400">${canSee ? this.fmt(v[1]) : 'R$ *****'}</span>
-                    </div>`;
-                });
+            async saveConfig() {
+                const cfg = { n1:{p:this.g('c-n1-prod'),a:this.g('c-n1-ass'),i:this.g('c-n1-imp')}, n2:{p:this.g('c-n2-prod'),a:this.g('c-n2-ass'),i:this.g('c-n2-imp')}, n3:{p:this.g('c-n3-prod'),a:this.g('c-n3-ass'),i:this.g('c-n3-imp')} };
+                await db.collection('settings').doc('global').set(cfg); alert("Config Rede Salva!");
             },
 
             g(id){ return parseFloat(document.getElementById(id).value)||0 },
             fmt(v){ return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}) },
             calc() {
-                const p=this.g('i-prod'), a=this.g('i-ass');
+                const p=this.g('i-prod'), a=this.g('i-ass'), iVal=this.g('i-imp');
                 const f=(this.g('q-lav')*40)+(this.g('q-imp')*40)+(this.g('q-mon')*10)+(this.g('q-alm')*10)+(this.g('q-pes')*7);
                 const t=(p*0.022)+(a*0.05)+f;
                 document.getElementById('preview').innerText = this.fmt(t);
-                return {t, f, p, a, i:this.g('i-imp')};
+                return {t, f, p, a, i:iVal};
             },
             renderBar(l, v, m, c) {
                 const p = Math.min((v/m)*100, 100).toFixed(0);
-                return `<div class="glass p-3 rounded-xl shadow-md"><div class="flex justify-between text-[11px] uppercase mb-1 font-bold tracking-tighter"><span class="text-${c}-400">${l}</span><span>${this.fmt(v)}</span></div><div class="bar-bg"><div class="bar-fill bg-${c}-500" style="width:${p}%"></div></div></div>`;
+                return `<div class="glass p-3 rounded-xl"><div class="flex justify-between text-[11px] uppercase mb-1 font-bold"><span>${l}</span><span>${this.fmt(v)}</span></div><div class="bar-bg"><div class="bar-fill bg-${c}-500" style="width:${p}%"></div></div></div>`;
             },
             nav(t) { 
                 ['home','metas','ranking','config','admin','team','news'].forEach(x=> { document.getElementById('tab-'+x)?.classList.add('hidden'); document.getElementById('nav-'+x)?.classList.replace('text-blue-500', 'text-gray-500'); }); 
@@ -524,38 +471,38 @@
                 if(t==='admin') this.renderAdmin();
                 if(t==='team') this.renderTeam();
                 if(t==='ranking') this.renderRanking();
-                if(t==='config' && this.user.r === 'admin') {
+                if(t==='config') {
                     const c = this.config;
-                    ['n1','n2','n3'].forEach(n => { document.getElementById(`c-${n}-prod`).value = c[n].p; document.getElementById(`c-${n}-ass`).value = c[n].a; document.getElementById(`c-${n}-imp`).value = c[n].i; });
+                    document.getElementById('config-inputs-area').innerHTML = `
+                        <div class="grid grid-cols-3 gap-2"><div class="col-span-3 text-[9px] font-black text-gray-500 uppercase">Nível 1</div><input type="number" id="c-n1-prod" class="input-box text-center p-2 text-xs" value="${c.n1.p}"><input type="number" id="c-n1-ass" class="input-box text-center p-2 text-xs" value="${c.n1.a}"><input type="number" id="c-n1-imp" class="input-box text-center p-2 text-xs" value="${c.n1.i}"></div>
+                        <div class="grid grid-cols-3 gap-2 border-t border-gray-700 pt-4"><div class="col-span-3 text-[9px] font-black text-gray-500 uppercase">Nível 2</div><input type="number" id="c-n2-prod" class="input-box text-center p-2 text-xs" value="${c.n2.p}"><input type="number" id="c-n2-ass" class="input-box text-center p-2 text-xs" value="${c.n2.a}"><input type="number" id="c-n2-imp" class="input-box text-center p-2 text-xs" value="${c.n2.i}"></div>
+                        <div class="grid grid-cols-3 gap-2 border-t border-gray-700 pt-4"><div class="col-span-3 text-[9px] font-black text-gray-500 uppercase">Nível 3</div><input type="number" id="c-n3-prod" class="input-box text-center p-2 text-xs" value="${c.n3.p}"><input type="number" id="c-n3-ass" class="input-box text-center p-2 text-xs" value="${c.n3.a}"><input type="number" id="c-n3-imp" class="input-box text-center p-2 text-xs" value="${c.n3.i}"></div>`;
+                }
+                if(t==='team' && this.user.r === 'manager') {
+                    const s = this.storeData;
+                    document.getElementById('mgr-goal-p').value = s.goal;
+                    document.getElementById('mgr-val-lav').value = s.valLav;
+                    document.getElementById('mgr-val-imp').value = s.valImp;
+                    document.getElementById('mgr-val-mon').value = s.valMon;
+                    document.getElementById('mgr-val-alm').value = s.valAlm;
+                    document.getElementById('mgr-val-pes').value = s.valPes;
                 }
             },
-            logout(){ location.reload(); },
+            async renderRanking() {
+                const mes = new Date().toISOString().slice(0,7);
+                const rData = {};
+                this.allSales.forEach(s => { if(s.date.startsWith(mes)) rData[s.seller] = (rData[s.seller] || 0) + (s.v.p || 0); });
+                const sorted = Object.entries(rData).sort((a,b) => b[1] - a[1]);
+                const list = document.getElementById('ranking-list'); list.innerHTML = "";
+                sorted.forEach((v, i) => {
+                    const isMe = v[0] === this.user.id;
+                    list.innerHTML += `<div class="glass p-5 rounded-[1.5rem] flex justify-between items-center border ${isMe ? 'border-blue-500 shadow-lg':'border-gray-700 opacity-60'}"><span class="font-black text-blue-400">${i+1}º</span><span class="font-black text-xs uppercase">${v[0]}</span><span class="font-black text-[10px] text-gray-400">${this.fmt(v[1])}</span></div>`;
+                });
+            },
             openModal(id){ document.getElementById(id).classList.remove('hidden'); document.getElementById(id).classList.add('flex'); },
             closeModal(id){ document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); },
-            toast(m){ const t=document.getElementById('toast'); document.getElementById('toast-msg').innerText=m; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'),3000); },
-            async saveOrder() {
-                const ord = document.getElementById('i-ord').value;
-                if(!ord) return;
-                const c = this.calc();
-                document.getElementById('loading').style.display='flex';
-                await db.collection('sales').add({ seller: this.user.id, store: this.user.store, order: ord, v: {p:c.p, a:c.a, i:c.i}, bonus: c.f, preview: c.t, date: new Date().toISOString(), q: {lav:this.g('q-lav'), imp:this.g('q-imp'), mon:this.g('q-mon'), alm:this.g('q-alm'), pes:this.g('q-pes')} });
-                await this.loadInitialData(); this.closeModal('modal-pedido'); document.getElementById('loading').style.display='none'; this.renderHome();
-            },
-            async saveConfig() {
-                const cfg = { n1:{p:this.g('c-n1-prod'), a:this.g('c-n1-ass'), i:this.g('c-n1-imp')}, n2:{p:this.g('c-n2-prod'), a:this.g('c-n2-ass'), i:this.g('c-n2-imp')}, n3:{p:this.g('c-n3-prod'), a:this.g('c-n3-ass'), i:this.g('c-n3-imp')} };
-                await db.collection('settings').doc('global').set(cfg); this.config = cfg; alert("Salvo!");
-            },
-            generatePeriodReport() {
-                const dStart = document.getElementById('date-start').value; const dEnd = document.getElementById('date-end').value;
-                if(!dStart || !dEnd) return;
-                const start = new Date(dStart + "T00:00:00"); const end = new Date(dEnd + "T23:59:59");
-                const filtrados = this.allSales.filter(s => { const d = new Date(s.date); return d >= start && d <= end && s.seller === this.user.id; });
-                let t = {p:0, a:0, f:0, qtd:0};
-                filtrados.forEach(s => { t.qtd++; t.p += (s.v.p || 0); t.a += (s.v.a || 0); t.f += (s.bonus || 0); });
-                const totalFinal = (t.p * 0.022) + (t.a * 0.05) + t.f;
-                document.getElementById('period-details-body').innerHTML = `<div class="space-y-3 text-center uppercase font-bold text-gray-400"><div class="flex justify-between border-b border-gray-700 pb-1 text-[11px]"><span>Total Pedidos:</span><b>${t.qtd}</b></div><div class="flex justify-between border-b border-gray-700 pb-1 text-[11px]"><span>Venda Bruta Prod:</span><b>${this.fmt(t.p)}</b></div><div class="pt-4 text-xs uppercase text-gray-500 font-black tracking-widest">Total no Período</div><div class="text-3xl font-black text-blue-400">${this.fmt(totalFinal)}</div></div>`;
-                this.openModal('modal-periodo');
-            }
+            logout(){ location.reload(); },
+            async delOrder(id) { if(confirm("Excluir?")) { await db.collection('sales').doc(id).delete(); await this.loadInitialData(); this.closeModal('modal-detalhe'); this.renderHome(); } }
         };
         sys.init();
     </script>
