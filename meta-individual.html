@@ -23,13 +23,16 @@
 
     <div class="max-w-md mx-auto space-y-6">
         
-        <!-- CABEÇALHO -->
-        <header class="text-center py-6">
+        <!-- CABEÇALHO COM BOTÃO VOLTAR -->
+        <header class="text-center py-6 relative">
+            <button onclick="window.location.href='index.html'" class="absolute left-0 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-white transition-all">
+                <i class="fas fa-arrow-left text-xl"></i>
+            </button>
             <h1 class="text-blue-500 font-black text-xs uppercase tracking-widest">Painel do Vendedor</h1>
             <h2 class="text-2xl font-black uppercase italic">Metas de Premiação</h2>
         </header>
 
-        <!-- IDENTIFICAÇÃO (Para saber qual vendedor está salvando) -->
+        <!-- IDENTIFICAÇÃO -->
         <div class="glass p-6 rounded-[2rem] border-l-4 border-blue-500 shadow-xl">
             <label class="text-[10px] text-blue-400 font-black uppercase">Seu Usuário / ID</label>
             <input type="text" id="vendedor-id" class="input-box uppercase mt-1 font-bold" placeholder="EX: VALMIR">
@@ -65,19 +68,19 @@
             </div>
         </div>
 
-        <!-- BOTÃO DE SALVAR (Seguindo seu padrão de botões) -->
+        <!-- BOTÃO DE SALVAR -->
         <button onclick="salvarMetas()" class="w-full bg-blue-600 text-white font-black py-4 rounded-xl uppercase text-xs shadow-lg active:scale-95 transition-all">
             Salvar Minhas Metas no Sistema
         </button>
 
-        <p id="msg-status" class="text-center font-black text-[10px] uppercase text-green-500 hidden">✓ Metas Atualizadas com Sucesso!</p>
+        <p id="msg-status" class="text-center font-black text-[10px] uppercase text-green-500 hidden">✓ Metas Atualizadas! Voltando ao painel...</p>
 
     </div>
 
     <script>
         // ==========================================
         // CONFIGURAÇÃO DO SEU BANCO DE DADOS
-        // Copie as chaves do seu arquivo original e cole aqui
+        // Lembre de colar suas chaves aqui novamente
         // ==========================================
         const firebaseConfig = {
             apiKey: "COLE_SUA_API_KEY",
@@ -88,18 +91,15 @@
             appId: "COLE_APP_ID"
         };
 
-        // Inicializar Firebase
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
         const db = firebase.firestore();
 
-        // Carregar dados se já existirem no celular (LocalStorage)
         window.onload = () => {
             const salvas = JSON.parse(localStorage.getItem('metas_individuais_v35'));
             if(salvas) {
                 document.getElementById('vendedor-id').value = salvas.vendedor || '';
-                // Preencher campos automaticamente
                 const campos = ['amarracao', 'imper', 'assist'];
                 for(let n=1; n<=3; n++) {
                     campos.forEach(c => {
@@ -135,16 +135,17 @@
             };
 
             try {
-                // 1. Salva no Banco de Dados oficial na coleção "Metas_Individuais"
                 await db.collection("Metas_Individuais").doc(vendedor).set(dados);
-                
-                // 2. Salva no celular para rapidez
                 localStorage.setItem('metas_individuais_v35', JSON.stringify(dados));
 
-                // Sucesso
                 const msg = document.getElementById('msg-status');
                 msg.classList.remove('hidden');
-                setTimeout(() => msg.classList.add('hidden'), 4000);
+
+                // VOLTA PARA O PAINEL AUTOMATICAMENTE APÓS 2 SEGUNDOS
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+
             } catch (e) {
                 alert("ERRO AO SALVAR: " + e.message);
             }
