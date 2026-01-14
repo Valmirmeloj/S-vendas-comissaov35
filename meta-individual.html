@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajuste de Metas Individuais</title>
+    
+    <!-- Bibliotecas que você já usa -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <style>
+        body { background-color: #0f172a; color: white; font-family: sans-serif; }
+        /* Seguindo seu estilo Glassmorphism */
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .input-box { width: 100%; background: #000; border: 1px solid #334155; border-radius: 0.75rem; padding: 12px; color: white; outline: none; }
+        .input-box:focus { border-color: #6366f1; }
+    </style>
+</head>
+<body class="p-4 pb-20">
+
+    <div class="max-w-md mx-auto space-y-6">
+        
+        <!-- CABEÇALHO -->
+        <header class="text-center py-6">
+            <h1 class="text-blue-500 font-black text-xs uppercase tracking-widest">Painel do Vendedor</h1>
+            <h2 class="text-2xl font-black uppercase italic">Metas de Premiação</h2>
+        </header>
+
+        <!-- IDENTIFICAÇÃO (Para saber qual vendedor está salvando) -->
+        <div class="glass p-6 rounded-[2rem] border-l-4 border-blue-500 shadow-xl">
+            <label class="text-[10px] text-blue-400 font-black uppercase">Seu Usuário / ID</label>
+            <input type="text" id="vendedor-id" class="input-box uppercase mt-1 font-bold" placeholder="EX: VALMIR">
+        </div>
+
+        <!-- NÍVEL 1 -->
+        <div class="glass p-6 rounded-[2rem] border-l-4 border-green-500 shadow-xl">
+            <h3 class="text-green-500 font-black text-xs uppercase mb-4">Meta Nível 01 (Bronze)</h3>
+            <div class="grid grid-cols-1 gap-3 text-[10px] font-black uppercase text-gray-400">
+                <div>Amarração<input type="number" id="n1-amarracao" class="input-box text-center mt-1"></div>
+                <div>Impermeabilização<input type="number" id="n1-imper" class="input-box text-center mt-1"></div>
+                <div>Assistência<input type="number" id="n1-assist" class="input-box text-center mt-1"></div>
+            </div>
+        </div>
+
+        <!-- NÍVEL 2 -->
+        <div class="glass p-6 rounded-[2rem] border-l-4 border-blue-500 shadow-xl">
+            <h3 class="text-blue-500 font-black text-xs uppercase mb-4">Meta Nível 02 (Prata)</h3>
+            <div class="grid grid-cols-1 gap-3 text-[10px] font-black uppercase text-gray-400">
+                <div>Amarração<input type="number" id="n2-amarracao" class="input-box text-center mt-1"></div>
+                <div>Impermeabilização<input type="number" id="n2-imper" class="input-box text-center mt-1"></div>
+                <div>Assistência<input type="number" id="n2-assist" class="input-box text-center mt-1"></div>
+            </div>
+        </div>
+
+        <!-- NÍVEL 3 -->
+        <div class="glass p-6 rounded-[2rem] border-l-4 border-amber-500 shadow-xl">
+            <h3 class="text-amber-500 font-black text-xs uppercase mb-4">Meta Nível 03 (Ouro)</h3>
+            <div class="grid grid-cols-1 gap-3 text-[10px] font-black uppercase text-gray-400">
+                <div>Amarração<input type="number" id="n3-amarracao" class="input-box text-center mt-1"></div>
+                <div>Impermeabilização<input type="number" id="n3-imper" class="input-box text-center mt-1"></div>
+                <div>Assistência<input type="number" id="n3-assist" class="input-box text-center mt-1"></div>
+            </div>
+        </div>
+
+        <!-- BOTÃO DE SALVAR (Seguindo seu padrão de botões) -->
+        <button onclick="salvarMetas()" class="w-full bg-blue-600 text-white font-black py-4 rounded-xl uppercase text-xs shadow-lg active:scale-95 transition-all">
+            Salvar Minhas Metas no Sistema
+        </button>
+
+        <p id="msg-status" class="text-center font-black text-[10px] uppercase text-green-500 hidden">✓ Metas Atualizadas com Sucesso!</p>
+
+    </div>
+
+    <script>
+        // ==========================================
+        // CONFIGURAÇÃO DO SEU BANCO DE DADOS
+        // Copie as chaves do seu arquivo original e cole aqui
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "COLE_SUA_API_KEY",
+            authDomain: "COLE_SEU_DOMAIN",
+            projectId: "COLE_SEU_PROJECT_ID",
+            storageBucket: "COLE_SEU_BUCKET",
+            messagingSenderId: "COLE_SENDER_ID",
+            appId: "COLE_APP_ID"
+        };
+
+        // Inicializar Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        // Carregar dados se já existirem no celular (LocalStorage)
+        window.onload = () => {
+            const salvas = JSON.parse(localStorage.getItem('metas_individuais_v35'));
+            if(salvas) {
+                document.getElementById('vendedor-id').value = salvas.vendedor || '';
+                // Preencher campos automaticamente
+                const campos = ['amarracao', 'imper', 'assist'];
+                for(let n=1; n<=3; n++) {
+                    campos.forEach(c => {
+                        const id = `n${n}-${c}`;
+                        if(salvas[`nivel${n}`]) document.getElementById(id).value = salvas[`nivel${n}`][c] || '';
+                    });
+                }
+            }
+        };
+
+        async function salvarMetas() {
+            const vendedor = document.getElementById('vendedor-id').value.toUpperCase();
+            if(!vendedor) return alert("DIGITE SEU USUÁRIO!");
+
+            const dados = {
+                vendedor: vendedor,
+                nivel1: {
+                    amarracao: document.getElementById('n1-amarracao').value || 0,
+                    imper: document.getElementById('n1-imper').value || 0,
+                    assist: document.getElementById('n1-assist').value || 0
+                },
+                nivel2: {
+                    amarracao: document.getElementById('n2-amarracao').value || 0,
+                    imper: document.getElementById('n2-imper').value || 0,
+                    assist: document.getElementById('n2-assist').value || 0
+                },
+                nivel3: {
+                    amarracao: document.getElementById('n3-amarracao').value || 0,
+                    imper: document.getElementById('n3-imper').value || 0,
+                    assist: document.getElementById('n3-assist').value || 0
+                },
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            try {
+                // 1. Salva no Banco de Dados oficial na coleção "Metas_Individuais"
+                await db.collection("Metas_Individuais").doc(vendedor).set(dados);
+                
+                // 2. Salva no celular para rapidez
+                localStorage.setItem('metas_individuais_v35', JSON.stringify(dados));
+
+                // Sucesso
+                const msg = document.getElementById('msg-status');
+                msg.classList.remove('hidden');
+                setTimeout(() => msg.classList.add('hidden'), 4000);
+            } catch (e) {
+                alert("ERRO AO SALVAR: " + e.message);
+            }
+        }
+    </script>
+</body>
+</html>
