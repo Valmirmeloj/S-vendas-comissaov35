@@ -1,133 +1,261 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configuração de Performance</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Minhas Metas - Platinum</title>
+    
+    <!-- PWA & ÍCONES -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" type="image/png" href="https://i.postimg.cc/MTGzyVGF/file-0000000092c471f5b7a5391ae5ba35f5-1.png">
+
+    <!-- SDKs FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 
     <style>
-        body { background-color: #0f172a; color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .input-box { width: 100%; background: #000; border: 1px solid #334155; border-radius: 1rem; padding: 14px; color: white; outline: none; transition: 0.3s; }
-        .input-box:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
-        
-        /* Notificação Profissional */
-        #toast {
-            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
-            background: #10b981; color: white; padding: 16px 32px; border-radius: 50px;
-            font-weight: 900; text-transform: uppercase; font-size: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3); transition: 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-            z-index: 9999; display: flex; align-items: center; gap: 10px;
-        }
-        #toast.show { top: 30px; }
+        body { background-color: #0f172a; color: white; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+        .glass { background: #1e293b; border: 1px solid #334155; }
+        .bar-bg { background: #0f172a; height: 14px; border-radius: 99px; overflow: hidden; position: relative; border: 1px solid #334155; }
+        .bar-fill { height: 100%; transition: width 1.5s ease-in-out; border-radius: 99px; }
+        #loading { position: fixed; inset: 0; background: #0f172a; z-index: 99; display: flex; align-items: center; justify-content: center; flex-direction: column; }
     </style>
 </head>
-<body class="p-4 pb-20">
+<body class="flex flex-col h-screen">
 
-    <div id="toast"><i class="fas fa-check-circle"></i> Meta Salva com Sucesso!</div>
+    <!-- LOADING -->
+    <div id="loading">
+        <i class="fas fa-circle-notch fa-spin text-4xl text-blue-500 mb-4"></i>
+        <p class="text-[10px] font-black uppercase tracking-widest text-blue-400 animate-pulse">Calculando Níveis...</p>
+    </div>
 
-    <div class="max-w-md mx-auto space-y-6">
-        <header class="text-center py-6 relative">
-            <button onclick="window.location.href='index.html'" class="absolute left-0 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-white">
-                <i class="fas fa-arrow-left text-xl"></i>
-            </button>
-            <h1 class="text-blue-500 font-black text-[10px] uppercase tracking-widest">Configuração Individual</h1>
-            <h2 class="text-2xl font-black uppercase italic">Meus Objetivos</h2>
+    <!-- CONTEÚDO -->
+    <div id="app" class="hidden flex flex-col h-full max-w-md mx-auto w-full">
+        
+        <!-- CABEÇALHO COM VOLTAR -->
+        <header class="p-6 pt-10 flex justify-between items-center bg-[#0f172a] border-b border-gray-800">
+            <div>
+                <p class="text-gray-500 text-[9px] font-black uppercase tracking-widest">Painel de Metas</p>
+                <h1 class="text-xl font-black text-white uppercase" id="u-name">...</h1>
+            </div>
+            <a href="index.html" class="bg-gray-800 w-10 h-10 flex items-center justify-center rounded-xl text-gray-400 active:scale-95 transition border border-gray-700">
+                <i class="fas fa-times"></i>
+            </a>
         </header>
 
-        <!-- IDENTIFICAÇÃO -->
-        <div class="glass p-6 rounded-[2.5rem] border-l-4 border-blue-500 shadow-2xl">
-            <label class="text-[9px] text-blue-400 font-black uppercase tracking-tighter">ID do Vendedor no Banco</label>
-            <input type="text" id="vendedor-id" class="input-box uppercase mt-1 font-bold text-sm" placeholder="SEU NOME NO SISTEMA">
-        </div>
-
-        <!-- NÍVEIS DE META -->
-        <div class="space-y-4">
-            <!-- NÍVEL 1 -->
-            <div class="glass p-6 rounded-[2.5rem] border-l-4 border-green-500">
-                <h3 class="text-green-500 font-black text-[10px] uppercase mb-4 tracking-widest">Nível 01 - Bronze</h3>
-                <div class="space-y-3">
-                    <div><label class="text-[9px] text-gray-500 font-bold uppercase">Amarração (R$)</label><input type="number" id="n1-amarracao" class="input-box text-center"></div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div><label class="text-[9px] text-gray-500 font-bold uppercase">Imper (R$)</label><input type="number" id="n1-imper" class="input-box text-center"></div>
-                        <div><label class="text-[9px] text-gray-500 font-bold uppercase">Assist (R$)</label><input type="number" id="n1-assist" class="input-box text-center"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- NÍVEL 2 -->
-            <div class="glass p-6 rounded-[2.5rem] border-l-4 border-blue-500">
-                <h3 class="text-blue-500 font-black text-[10px] uppercase mb-4 tracking-widest">Nível 02 - Prata</h3>
-                <div class="space-y-3">
-                    <div><label class="text-[9px] text-gray-500 font-bold uppercase">Amarração (R$)</label><input type="number" id="n2-amarracao" class="input-box text-center"></div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div><label class="text-[9px] text-gray-500 font-bold uppercase">Imper (R$)</label><input type="number" id="n2-imper" class="input-box text-center"></div>
-                        <div><label class="text-[9px] text-gray-500 font-bold uppercase">Assist (R$)</label><input type="number" id="n2-assist" class="input-box text-center"></div>
-                    </div>
-                </div>
-            </div>
+        <main class="flex-1 p-5 space-y-6 overflow-y-auto pb-10">
             
-            <!-- NÍVEL 3 -->
-            <div class="glass p-6 rounded-[2.5rem] border-l-4 border-amber-500">
-                <h3 class="text-amber-500 font-black text-[10px] uppercase mb-4 tracking-widest">Nível 03 - Ouro</h3>
-                <div class="space-y-3">
-                    <div><label class="text-[9px] text-gray-500 font-bold uppercase">Amarração (R$)</label><input type="number" id="n3-amarracao" class="input-box text-center"></div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div><label class="text-[9px] text-gray-500 font-bold uppercase">Imper (R$)</label><input type="number" id="n3-imper" class="input-box text-center"></div>
-                        <div><label class="text-[9px] text-gray-500 font-bold uppercase">Assist (R$)</label><input type="number" id="n3-assist" class="input-box text-center"></div>
-                    </div>
+            <!-- CARD DE STATUS ATUAL -->
+            <div class="glass p-6 rounded-[2rem] text-center relative overflow-hidden border-t-4 border-yellow-500 shadow-2xl">
+                <div class="absolute -right-4 -top-4 opacity-10"><i class="fas fa-trophy text-8xl text-yellow-500"></i></div>
+                
+                <p class="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-2">Seu Nível Atual</p>
+                <h2 class="text-5xl font-black text-white mb-2 tracking-tighter" id="lbl-nivel">...</h2>
+                <div id="badge-status" class="inline-block bg-yellow-500/20 text-yellow-400 px-4 py-1 rounded-full text-[10px] font-black uppercase border border-yellow-500/30">
+                    Calculando...
                 </div>
             </div>
-        </div>
 
-        <button onclick="salvarMetas()" class="w-full bg-blue-600 text-white font-black py-5 rounded-2xl uppercase text-xs shadow-xl active:scale-95 transition-all">
-            Salvar Meta de Performance
-        </button>
+            <!-- ÁREA DAS BARRAS (AMARRADAS) -->
+            <div class="space-y-4">
+                <div class="flex justify-between items-end px-2">
+                    <h3 class="font-black uppercase text-xs text-blue-400">
+                        Próximo Objetivo: <span id="lbl-alvo" class="text-white">...</span>
+                    </h3>
+                    <i class="fas fa-link text-gray-600 text-xs" title="Metas Amarradas"></i>
+                </div>
+
+                <!-- BARRA PRODUTO -->
+                <div class="glass p-4 rounded-2xl border-l-4 border-blue-600">
+                    <div class="flex justify-between text-[10px] font-black uppercase mb-1">
+                        <span class="text-blue-400">Monetário (Produto)</span>
+                        <span id="txt-prod">R$ 0</span>
+                    </div>
+                    <div class="bar-bg"><div id="bar-prod" class="bar-fill bg-blue-600" style="width: 0%"></div></div>
+                </div>
+
+                <!-- BARRA ASSISTÊNCIA -->
+                <div class="glass p-4 rounded-2xl border-l-4 border-green-500">
+                    <div class="flex justify-between text-[10px] font-black uppercase mb-1">
+                        <span class="text-green-400">Assistência</span>
+                        <span id="txt-ass">R$ 0</span>
+                    </div>
+                    <div class="bar-bg"><div id="bar-ass" class="bar-fill bg-green-500" style="width: 0%"></div></div>
+                </div>
+
+                <!-- BARRA IMPERMEABILIZAÇÃO -->
+                <div class="glass p-4 rounded-2xl border-l-4 border-purple-500">
+                    <div class="flex justify-between text-[10px] font-black uppercase mb-1">
+                        <span class="text-purple-400">Impermeabilização</span>
+                        <span id="txt-imp">R$ 0</span>
+                    </div>
+                    <div class="bar-bg"><div id="bar-imp" class="bar-fill bg-purple-500" style="width: 0%"></div></div>
+                </div>
+            </div>
+
+            <!-- INFO DA REGRA -->
+            <div class="bg-blue-900/20 p-4 rounded-xl border border-blue-500/20 text-center">
+                <p class="text-[9px] text-blue-300 font-bold uppercase leading-relaxed">
+                    <i class="fas fa-info-circle mr-1"></i> 
+                    Regra de Premiação: Para subir de nível, você precisa bater as 3 metas simultaneamente (Produto + Assistência + Imper).
+                </p>
+            </div>
+
+        </main>
     </div>
 
     <script>
-        // COLOQUE SUAS CHAVES DO FIREBASE AQUI
-        const firebaseConfig = { apiKey: "...", authDomain: "...", projectId: "...", storageBucket: "...", messagingSenderId: "...", appId: "..." };
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        // --- MESMA CHAVE DO SEU SISTEMA ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyAZ6Zp-XRhmJaqyrA806YxGAYo3TyFttpQ",
+            authDomain: "b-dados-sistema.firebaseapp.com",
+            projectId: "b-dados-sistema",
+            storageBucket: "b-dados-sistema.firebasestorage.app",
+            messagingSenderId: "725143488446",
+            appId: "1:725143488446:web:ab7178929e9c9b8dcf9bef"
+        };
+        firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        window.onload = () => {
-            const salvas = JSON.parse(localStorage.getItem('metas_individuais_v35'));
-            if(salvas) {
-                document.getElementById('vendedor-id').value = salvas.vendedor || '';
-                for(let n=1; n<=3; n++) {
-                    ['amarracao', 'imper', 'assist'].forEach(c => {
-                        if(salvas[`nivel${n}`]) document.getElementById(`n${n}-${c}`).value = salvas[`nivel${n}`][c] || '';
+        const metaApp = {
+            userId: null,
+            config: {}, // Aqui ficam os valores N1, N2, N3 do banco
+
+            async init() {
+                // Pega quem logou no index.html
+                this.userId = localStorage.getItem('usuario_logado');
+                
+                if (!this.userId) {
+                    alert("Por favor, faça login no painel principal.");
+                    window.location.href = 'index.html';
+                    return;
+                }
+                
+                document.getElementById('u-name').innerText = this.userId;
+                await this.carregarDados();
+            },
+
+            async carregarDados() {
+                try {
+                    // 1. BUSCA AS METAS DA REDE (GLOBAL)
+                    const confSnap = await db.collection('settings').doc('global').get();
+                    
+                    // Se não achar no banco, usa um padrão de segurança
+                    this.config = confSnap.exists ? confSnap.data() : { 
+                        n1:{p:70000,a:720,i:720}, 
+                        n2:{p:80000,a:2200,i:2160}, 
+                        n3:{p:96000,a:3000,i:3000} 
+                    };
+
+                    // 2. SOMA AS VENDAS DO MÊS ATUAL
+                    const hoje = new Date();
+                    const mesAtual = hoje.toISOString().slice(0, 7); // Ex: "2023-10"
+                    
+                    let t = { p: 0, a: 0, i: 0 };
+                    
+                    // Busca vendas do vendedor logado
+                    const snapshot = await db.collection('sales')
+                        .where('seller', '==', this.userId)
+                        .get();
+
+                    snapshot.forEach(doc => {
+                        const s = doc.data();
+                        // Filtra o mês aqui no JS
+                        if(s.date && s.date.startsWith(mesAtual)) {
+                            t.p += (s.v.p || 0);
+                            t.a += (s.v.a || 0);
+                            t.i += (s.v.i || 0); 
+                        }
                     });
+
+                    this.renderizarTela(t);
+                    
+                    // Libera a tela
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('app').classList.remove('hidden');
+
+                } catch (error) {
+                    console.error("Erro:", error);
+                    alert("Erro ao carregar metas. Verifique a internet.");
+                }
+            },
+
+            renderizarTela(t) {
+                const C = this.config;
+                const fmt = v => v.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL', maximumFractionDigits: 0});
+
+                // --- LÓGICA DE NÍVEIS AMARRADOS ---
+                // Verifica qual nível o vendedor JÁ GARANTIU
+                let nivel = 0;
+
+                const bateuN3 = (t.p >= C.n3.p && t.a >= C.n3.a && t.i >= C.n3.i);
+                const bateuN2 = (t.p >= C.n2.p && t.a >= C.n2.a && t.i >= C.n2.i);
+                const bateuN1 = (t.p >= C.n1.p && t.a >= C.n1.a && t.i >= C.n1.i);
+
+                if (bateuN3) nivel = 3;
+                else if (bateuN2) nivel = 2;
+                else if (bateuN1) nivel = 1;
+
+                // Define qual é o PRÓXIMO alvo
+                let alvo = C.n1; // Começa mirando no N1
+                let nomeAlvo = "BUSCANDO NÍVEL 1";
+
+                if (nivel === 1) { alvo = C.n2; nomeAlvo = "BUSCANDO NÍVEL 2"; }
+                if (nivel === 2) { alvo = C.n3; nomeAlvo = "RUMO AO NÍVEL 3"; }
+                if (nivel === 3) { alvo = C.n3; nomeAlvo = "NÍVEL MÁXIMO ATINGIDO"; } 
+                // Se já é N3, mantém o alvo N3 para mostrar as barras cheias
+
+                // ATUALIZA O CARD DE STATUS
+                const elNivel = document.getElementById('lbl-nivel');
+                const elBadge = document.getElementById('badge-status');
+                
+                elNivel.innerText = `NÍVEL ${nivel}`;
+                document.getElementById('lbl-alvo').innerText = nomeAlvo;
+
+                if(nivel > 0) {
+                    elNivel.classList.add('text-yellow-400');
+                    elBadge.innerText = "Parabéns! Você está pontuando.";
+                    elBadge.classList.replace('text-yellow-400', 'text-green-400');
+                    elBadge.classList.replace('bg-yellow-500/20', 'bg-green-500/20');
+                } else {
+                    elBadge.innerText = "Ainda sem qualificação";
+                }
+
+                // ATUALIZA AS BARRAS (Mirando no alvo calculado)
+                this.atualizarBarra('bar-prod', 'txt-prod', t.p, alvo.p);
+                this.atualizarBarra('bar-ass', 'txt-ass', t.a, alvo.a);
+                this.atualizarBarra('bar-imp', 'txt-imp', t.i, alvo.i);
+            },
+
+            atualizarBarra(barId, txtId, atual, meta) {
+                const fmt = v => v.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL', maximumFractionDigits: 0});
+                
+                // Calcula porcentagem (max 100%)
+                let pct = 0;
+                if(meta > 0) pct = Math.min((atual / meta) * 100, 100);
+                
+                const elBar = document.getElementById(barId);
+                elBar.style.width = pct + '%';
+                
+                // Texto: Atual / Meta
+                const cor = pct >= 100 ? 'text-green-400 font-bold' : 'text-white';
+                document.getElementById(txtId).innerHTML = `<span class="${cor}">${fmt(atual)}</span> <span class="text-gray-500 text-[9px]">/ ${fmt(meta)}</span>`;
+                
+                // Brilho se completou
+                if(pct >= 100) {
+                    elBar.classList.add('shadow-[0_0_15px_currentColor]');
+                    elBar.parentElement.classList.add('border-green-500'); // Pinta a borda do container
                 }
             }
         };
 
-        async function salvarMetas() {
-            const vendedor = document.getElementById('vendedor-id').value.toUpperCase();
-            if(!vendedor) { alert("IDENTIFIQUE SEU USUÁRIO"); return; }
-
-            const dados = {
-                vendedor: vendedor,
-                nivel1: { amarracao: document.getElementById('n1-amarracao').value, imper: document.getElementById('n1-imper').value, assist: document.getElementById('n1-assist').value },
-                nivel2: { amarracao: document.getElementById('n2-amarracao').value, imper: document.getElementById('n2-imper').value, assist: document.getElementById('n2-assist').value },
-                nivel3: { amarracao: document.getElementById('n3-amarracao').value, imper: document.getElementById('n3-imper').value, assist: document.getElementById('n3-assist').value },
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            };
-
-            try {
-                await db.collection("Metas_Individuais").doc(vendedor).set(dados);
-                localStorage.setItem('metas_individuais_v35', JSON.stringify(dados));
-                
-                const toast = document.getElementById('toast');
-                toast.classList.add('show');
-                setTimeout(() => { window.location.href = 'index.html'; }, 2000);
-            } catch (e) { console.error(e); }
-        }
+        // Iniciar
+        metaApp.init();
     </script>
 </body>
 </html>
