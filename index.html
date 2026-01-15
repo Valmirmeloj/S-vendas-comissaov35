@@ -79,6 +79,24 @@
                     <p class="text-[9px] text-gray-500 text-center font-bold" id="store-goal-text">Sincronizando...</p>
                 </div>
 
+<!-- BOTÃO META INDIVIDUAL -->
+<div class="mb-4">
+    <a href="meta-individual.html" class="glass p-4 rounded-2xl flex justify-between items-center border border-blue-500/30 shadow-lg active:scale-95 transition text-decoration-none">
+        <div class="flex items-center gap-4">
+            <div class="bg-blue-600/20 p-3 rounded-full text-blue-400 border border-blue-500/30">
+                <i class="fas fa-crosshairs text-xl"></i>
+            </div>
+            <div class="text-left">
+                <p class="text-[9px] text-gray-400 font-black uppercase tracking-widest">Acompanhamento</p>
+                <h3 class="text-sm font-black text-white uppercase">Minha Performance</h3>
+            </div>
+        </div>
+        <div class="bg-black/20 w-8 h-8 rounded-full flex items-center justify-center">
+            <i class="fas fa-chevron-right text-xs text-gray-500"></i>
+        </div>
+    </a>
+</div>
+                
                 <div class="grid grid-cols-2 gap-3 text-center">
                     <div class="glass p-5 rounded-2xl border-l-4 border-blue-500 shadow-xl"><p class="text-[9px] text-blue-400 font-bold uppercase">Vendido Mês</p><h3 class="text-xl font-black text-white" id="d-total">R$ 0,00</h3></div>
                     <div class="glass p-5 rounded-2xl border-l-4 border-green-500 shadow-xl"><p class="text-[9px] text-green-400 font-bold uppercase">Comissão (2.2%)</p><h3 class="text-xl font-black text-white" id="d-my-profit">R$ 0,00</h3></div>
@@ -271,6 +289,7 @@
                     if(data.r !== 'admin' && Date.now() > data.exp) throw new Error("Acesso Expirado.");
                     
                     this.user = { id: u, ...data };
+                    localStorage.setItem('usuario_v39', u);
                     await db.collection('users').doc(u).update({ lastSeen: Date.now() });
                     
                     document.getElementById('u-name').innerText = u;
