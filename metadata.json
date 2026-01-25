@@ -1,0 +1,7 @@
+{
+  "name": "V&C",
+  "description": "CRM Offline-First para gestão de vendas e comissões.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
